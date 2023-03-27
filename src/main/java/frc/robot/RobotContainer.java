@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ChargeStation;
 import frc.robot.commands.TeleopMovement;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.Joystick;
@@ -55,8 +56,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
+    return new ChargeStation(swerveDrive);
   }
   public Command getTeleopCommand() {
     return new TeleopMovement(swerveDrive, m_driverController);

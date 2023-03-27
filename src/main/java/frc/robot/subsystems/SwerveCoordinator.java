@@ -18,6 +18,12 @@ public class SwerveCoordinator extends SubsystemBase {
     this.rightFrontModule = rightFrontModule;
     this.rightBackModule = rightBackModule;
   }
+  public void lockPosition() {
+    leftFrontModule.setDirection(135.0);
+    leftBackModule.setDirection(45.0);
+    rightFrontModule.setDirection(-45.0);
+    rightBackModule.setDirection(-135.0);
+  }
   public void inplaceTurn(double power){
     leftFrontModule.setDirection(135.0);
     leftBackModule.setDirection(45.0);
@@ -29,56 +35,34 @@ public class SwerveCoordinator extends SubsystemBase {
     rightFrontModule.setSpeed(power);
     rightBackModule.setSpeed(power);
   }
-  public void translateTurn(double direction, double translatePower, double turnPower)
-  {
+  public void translateTurn(double direction, double translatePower, double turnPower){
       double turnAngle = turnPower * 45.0;
-  
       // if the left front Module is in the front
-      if (SwerveModule.closestAngle(direction, 135.0) >= 90.0)
-      {
-          leftFrontModule.setDirection(direction + turnAngle);
-      }
+      if (SwerveModule.closestAngle(direction, 135.0) >= 90.0) {leftFrontModule.setDirection(direction + turnAngle);}
       // if it's in the back
-      else
-      {
-          leftFrontModule.setDirection(direction - turnAngle);
-      }
+      else {leftFrontModule.setDirection(direction - turnAngle);}
       // if the left back Module is in the front
-      if (SwerveModule.closestAngle(direction, 225.0) > 90.0)
-      {
-          leftBackModule.setDirection(direction + turnAngle);
-      }
+      if (SwerveModule.closestAngle(direction, 225.0) > 90.0) {leftBackModule.setDirection(direction + turnAngle);}
       // if it's in the back
-      else
-      {
-          leftBackModule.setDirection(direction - turnAngle);
-      }
+      else {leftBackModule.setDirection(direction - turnAngle);}
       // if the right front Module is in the front
-      if (SwerveModule.closestAngle(direction, 45.0) > 90.0)
-      {
-          rightFrontModule.setDirection(direction + turnAngle);
-      }
+      if (SwerveModule.closestAngle(direction, 45.0) > 90.0) {rightFrontModule.setDirection(direction + turnAngle);}
       // if it's in the back
-      else
-      {
-          rightFrontModule.setDirection(direction - turnAngle);
-      }
+      else {rightFrontModule.setDirection(direction - turnAngle);}
       // if the right back Module is in the front
-      if (SwerveModule.closestAngle(direction, 315.0) >= 90.0)
-      {
-          rightBackModule.setDirection(direction + turnAngle);
-      }
+      if (SwerveModule.closestAngle(direction, 315.0) >= 90.0) {rightBackModule.setDirection(direction + turnAngle);}
       // if it's in the back
-      else
-      {
-          rightBackModule.setDirection(direction - turnAngle);
-      }
+      else {rightBackModule.setDirection(direction - turnAngle);}
   
       leftFrontModule.setSpeed(translatePower);
       leftBackModule.setSpeed(translatePower);
       rightFrontModule.setSpeed(translatePower);
       rightBackModule.setSpeed(translatePower);
   }
+  public void swerveMove(double direction, double translatePower, double turnPower) {
+    if ((translatePower == 0) && (turnPower != 0)){inplaceTurn(turnPower);}
+    else {translateTurn(direction, translatePower, turnPower);}
+}
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
