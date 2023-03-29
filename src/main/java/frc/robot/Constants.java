@@ -34,5 +34,9 @@ public final class Constants {
     public static final double YAW_P = 0.01;
     public static final double TILT_P = 0.02;
     public static final double DEADZONE = 3;
+    public static final double START_SPEED = 0.4;
+  }
+  public static class SwerveConstants {
+    public static final double MODULE_ROTATION_P = 0.01;
   }
 }

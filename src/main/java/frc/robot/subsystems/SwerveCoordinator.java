@@ -29,7 +29,7 @@ public class SwerveCoordinator extends SubsystemBase {
     leftBackModule.setDirection(45.0);
     rightFrontModule.setDirection(-45.0);
     rightBackModule.setDirection(-135.0);
-
+    //might have to fix stuff
     leftFrontModule.setSpeed(power);
     leftBackModule.setSpeed(power);
     rightFrontModule.setSpeed(power);
@@ -62,7 +62,7 @@ public class SwerveCoordinator extends SubsystemBase {
   public void swerveMove(double direction, double translatePower, double turnPower) {
     if ((translatePower == 0) && (turnPower != 0)){inplaceTurn(turnPower);}
     else {translateTurn(direction, translatePower, turnPower);}
-}
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

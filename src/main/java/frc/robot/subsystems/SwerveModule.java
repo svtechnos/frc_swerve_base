@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -28,8 +29,8 @@ public class SwerveModule extends SubsystemBase {
     double currentAngle = turnEncoder.getSelectedSensorPosition()*0.087890625;
     double deltaAngle = closestAngle(currentAngle, direction);
     double deltaAngleFlipped = closestAngle(currentAngle, direction+180);
-    if (Math.abs(deltaAngle) <= Math.abs(deltaAngleFlipped)){motorDirection = 1;turnMotor.set(deltaAngle*0.01);}
-    else {motorDirection = -1;turnMotor.set(deltaAngleFlipped*0.01);}
+    if (Math.abs(deltaAngle) <= Math.abs(deltaAngleFlipped)){motorDirection = 1;turnMotor.set(deltaAngle*Constants.SwerveConstants.MODULE_ROTATION_P);}
+    else {motorDirection = -1;turnMotor.set(deltaAngleFlipped*Constants.SwerveConstants.MODULE_ROTATION_P);}
   }
   public static double closestAngle(double currentAngle, double targetAngle){
     // get direction
