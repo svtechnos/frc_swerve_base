@@ -5,6 +5,12 @@
 package frc.robot;
 
 public final class Constants {
+  public static class Offsets {
+    public static final double LEFT_FRONT_TURN_ENCODER_OFFSET = 0;
+    public static final double LEFT_BACK_TURN_ENCODER_OFFSET = 0;
+    public static final double RIGHT_FRONT_TURN_ENCODER_OFFSET = 0;
+    public static final double RIGHT_BACK_TURN_ENCODER_OFFSET = 0;
+  }
   public static class DeviceIDs {
     public static final int LEFT_FRONT_DRIVE_ID=1;
     public static final int LEFT_FRONT_TURN_ID=2;
@@ -33,10 +39,15 @@ public final class Constants {
   public static class ChargeStationConstants {
     public static final double YAW_P = 0.01;
     public static final double TILT_P = 0.02;
-    public static final double DEADZONE = 3;
+    public static final double DEADZONE = 2;
     public static final double START_SPEED = 0.4;
   }
   public static class SwerveConstants {
     public static final double MODULE_ROTATION_P = 0.01;
+    public static final double TURN_ANGLE_DEADZONE = 2;
+    public static final double MOVEMENT_SPEED_DEADZONE = 0.05;
+    public static final double CLIP_SPEED = 0.6;
+    public static final double DRIVE_MOTOR_RAMP_RATE = 0.4;
+    public static final double TURN_MOTOR_RAMP_RATE = 0.1;
   }
 }

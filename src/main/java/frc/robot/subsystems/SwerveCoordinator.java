@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class SwerveCoordinator extends SubsystemBase {
   SwerveModule leftFrontModule;
@@ -36,20 +37,25 @@ public class SwerveCoordinator extends SubsystemBase {
     rightBackModule.setSpeed(power);
   }
   public void translateTurn(double direction, double translatePower, double turnPower){
+      // turnAngle goes from 45 to -45
       double turnAngle = turnPower * 45.0;
-      // if the left front Module is in the front
+
+      // If the left front Module is in the front
       if (SwerveModule.closestAngle(direction, 135.0) >= 90.0) {leftFrontModule.setDirection(direction + turnAngle);}
       // if it's in the back
       else {leftFrontModule.setDirection(direction - turnAngle);}
-      // if the left back Module is in the front
+
+      // If the left back Module is in the front
       if (SwerveModule.closestAngle(direction, 225.0) > 90.0) {leftBackModule.setDirection(direction + turnAngle);}
       // if it's in the back
       else {leftBackModule.setDirection(direction - turnAngle);}
-      // if the right front Module is in the front
+
+      // If the right front Module is in the front
       if (SwerveModule.closestAngle(direction, 45.0) > 90.0) {rightFrontModule.setDirection(direction + turnAngle);}
       // if it's in the back
       else {rightFrontModule.setDirection(direction - turnAngle);}
-      // if the right back Module is in the front
+
+      // If the right back Module is in the front
       if (SwerveModule.closestAngle(direction, 315.0) >= 90.0) {rightBackModule.setDirection(direction + turnAngle);}
       // if it's in the back
       else {rightBackModule.setDirection(direction - turnAngle);}
@@ -60,7 +66,7 @@ public class SwerveCoordinator extends SubsystemBase {
       rightBackModule.setSpeed(translatePower);
   }
   public void swerveMove(double direction, double translatePower, double turnPower) {
-    if ((translatePower == 0) && (turnPower != 0)){inplaceTurn(turnPower);}
+    if ((SwerveModule.deadzone(translatePower, Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE) == 0) && (turnPower != 0)){inplaceTurn(turnPower);}
     else {translateTurn(direction, translatePower, turnPower);}
   }
   @Override

@@ -53,11 +53,19 @@ public class SwerveDrive extends SubsystemBase {
     LEFT_BACK_DRIVE_MOTOR = new CANSparkMax(Constants.DeviceIDs.LEFT_BACK_DRIVE_ID, MotorType.kBrushless);
     RIGHT_FRONT_DRIVE_MOTOR = new CANSparkMax(Constants.DeviceIDs.RIGHT_FRONT_DRIVE_ID, MotorType.kBrushless);
     RIGHT_BACK_DRIVE_MOTOR = new CANSparkMax(Constants.DeviceIDs.RIGHT_BACK_DRIVE_ID, MotorType.kBrushless);
+    LEFT_FRONT_DRIVE_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.DRIVE_MOTOR_RAMP_RATE);
+    LEFT_BACK_DRIVE_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.DRIVE_MOTOR_RAMP_RATE);
+    RIGHT_FRONT_DRIVE_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.DRIVE_MOTOR_RAMP_RATE);
+    RIGHT_BACK_DRIVE_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.DRIVE_MOTOR_RAMP_RATE);
 
     LEFT_FRONT_TURN_MOTOR = new CANSparkMax(Constants.DeviceIDs.LEFT_FRONT_TURN_ID, MotorType.kBrushless);
     LEFT_BACK_TURN_MOTOR = new CANSparkMax(Constants.DeviceIDs.LEFT_BACK_TURN_ID, MotorType.kBrushless);
     RIGHT_FRONT_TURN_MOTOR = new CANSparkMax(Constants.DeviceIDs.RIGHT_FRONT_TURN_ID, MotorType.kBrushless);
     RIGHT_BACK_TURN_MOTOR = new CANSparkMax(Constants.DeviceIDs.RIGHT_BACK_TURN_ID, MotorType.kBrushless);
+    LEFT_FRONT_TURN_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.TURN_MOTOR_RAMP_RATE);
+    LEFT_BACK_TURN_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.TURN_MOTOR_RAMP_RATE);
+    RIGHT_FRONT_TURN_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.TURN_MOTOR_RAMP_RATE);
+    RIGHT_BACK_TURN_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.TURN_MOTOR_RAMP_RATE);
     // Encoders
     LEFT_FRONT_DRIVE_DISTANCE_ENCODER = LEFT_FRONT_TURN_MOTOR.getEncoder();
     LEFT_BACK_DRIVE_DISTANCE_ENCODER = LEFT_BACK_TURN_MOTOR.getEncoder();
@@ -72,12 +80,22 @@ public class SwerveDrive extends SubsystemBase {
     GYRO = new Pigeon2(Constants.DeviceIDs.GYRO_DEVICE_ID, "rio");
 
     // SwerveDriveModules
-    LEFT_FRONT_MODULE = new SwerveModule(LEFT_FRONT_TURN_ENCODER, LEFT_FRONT_TURN_MOTOR, LEFT_FRONT_DRIVE_MOTOR);
-    LEFT_BACK_MODULE = new SwerveModule(LEFT_BACK_TURN_ENCODER, LEFT_BACK_TURN_MOTOR, LEFT_BACK_DRIVE_MOTOR);
-    RIGHT_FRONT_MODULE = new SwerveModule(RIGHT_FRONT_TURN_ENCODER, RIGHT_FRONT_TURN_MOTOR, RIGHT_FRONT_DRIVE_MOTOR);
-    RIGHT_BACK_MODULE = new SwerveModule(RIGHT_BACK_TURN_ENCODER, RIGHT_BACK_TURN_MOTOR, RIGHT_BACK_DRIVE_MOTOR);
+    LEFT_FRONT_MODULE = new SwerveModule(LEFT_FRONT_TURN_ENCODER, LEFT_FRONT_TURN_MOTOR, LEFT_FRONT_DRIVE_MOTOR, LEFT_FRONT_DRIVE_DISTANCE_ENCODER, Constants.Offsets.LEFT_FRONT_TURN_ENCODER_OFFSET);
+    LEFT_BACK_MODULE = new SwerveModule(LEFT_BACK_TURN_ENCODER, LEFT_BACK_TURN_MOTOR, LEFT_BACK_DRIVE_MOTOR, LEFT_BACK_DRIVE_DISTANCE_ENCODER, Constants.Offsets.LEFT_BACK_TURN_ENCODER_OFFSET);
+    RIGHT_FRONT_MODULE = new SwerveModule(RIGHT_FRONT_TURN_ENCODER, RIGHT_FRONT_TURN_MOTOR, RIGHT_FRONT_DRIVE_MOTOR, RIGHT_FRONT_DRIVE_DISTANCE_ENCODER, Constants.Offsets.RIGHT_FRONT_TURN_ENCODER_OFFSET);
+    RIGHT_BACK_MODULE = new SwerveModule(RIGHT_BACK_TURN_ENCODER, RIGHT_BACK_TURN_MOTOR, RIGHT_BACK_DRIVE_MOTOR, RIGHT_BACK_DRIVE_DISTANCE_ENCODER, Constants.Offsets.RIGHT_BACK_TURN_ENCODER_OFFSET);
     // SwerveCoordinator
     SWERVE_COORDINATOR = new SwerveCoordinator(LEFT_FRONT_MODULE, LEFT_BACK_MODULE, RIGHT_FRONT_MODULE, RIGHT_BACK_MODULE);
+  }
+  public void reset(){
+    LEFT_FRONT_DRIVE_DISTANCE_ENCODER.setPosition(0);
+    LEFT_BACK_DRIVE_DISTANCE_ENCODER.setPosition(0);
+    RIGHT_FRONT_DRIVE_DISTANCE_ENCODER.setPosition(0);
+    RIGHT_BACK_DRIVE_DISTANCE_ENCODER.setPosition(0);
+  }
+
+  public boolean reached(double distanceMeters){
+    return (LEFT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters)&&(LEFT_BACK_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters)&&(RIGHT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters)&&(RIGHT_BACK_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters);
   }
 
   @Override

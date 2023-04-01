@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -15,28 +16,40 @@ public class SwerveModule extends SubsystemBase {
   WPI_TalonSRX turnEncoder;
   CANSparkMax turnMotor;
   CANSparkMax driveMotor;
+  RelativeEncoder driveEncoder;
+  double turnEncoderOffset;
   private double motorDirection = 1;
 
-  public SwerveModule(WPI_TalonSRX turnEncoder, CANSparkMax turnMotor, CANSparkMax driveMotor){
+  public SwerveModule(WPI_TalonSRX turnEncoder, CANSparkMax turnMotor, CANSparkMax driveMotor, RelativeEncoder driveEncoder, double turnEncoderOffset){
     this.driveMotor = driveMotor;
     this.turnMotor = turnMotor;
     this.turnEncoder = turnEncoder;
+    this.driveEncoder = driveEncoder;
+    this.turnEncoderOffset = turnEncoderOffset;
   }
   public void setSpeed(double speed){
     driveMotor.set(speed*motorDirection);
   }
   public void setDirection(double direction){
-    double currentAngle = turnEncoder.getSelectedSensorPosition()*0.087890625;
+    double currentAngle = (turnEncoder.getSelectedSensorPosition()*(360/4096)+turnEncoderOffset)%360;
     double deltaAngle = closestAngle(currentAngle, direction);
     double deltaAngleFlipped = closestAngle(currentAngle, direction+180);
-    if (Math.abs(deltaAngle) <= Math.abs(deltaAngleFlipped)){motorDirection = 1;turnMotor.set(deltaAngle*Constants.SwerveConstants.MODULE_ROTATION_P);}
-    else {motorDirection = -1;turnMotor.set(deltaAngleFlipped*Constants.SwerveConstants.MODULE_ROTATION_P);}
+    if (Math.abs(deltaAngle) <= Math.abs(deltaAngleFlipped)){motorDirection = 1;turnMotor.set(clipSpeed((deadzone(deltaAngle, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));}
+    else {motorDirection = -1;turnMotor.set(clipSpeed((deadzone(deltaAngleFlipped, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));}
   }
   public static double closestAngle(double currentAngle, double targetAngle){
     // get direction
-    double dir = (targetAngle%360.0) - (currentAngle%360.0);
+    double deltaAngle = (targetAngle - currentAngle)%360;
     // convert from -360 to 360 to -180 to 180
-    dir = (Math.abs(dir) > 180.0)?-(Math.signum(dir) * 360.0) + dir:dir;
-    return dir;
+    deltaAngle = (Math.abs(deltaAngle) > 180.0)?-(Math.signum(deltaAngle) * 360.0) + deltaAngle:deltaAngle;
+    return deltaAngle;
+  }
+  public static double deadzone(double number, double deadzone){
+    number = (Math.abs(number)<deadzone)?number=0:number;
+    return number;
+  }
+  public static double clipSpeed(double speed, double clipSpeed){
+    speed = (Math.abs(speed)>clipSpeed)?clipSpeed:speed;
+    return speed;
   }
 }
