@@ -41,22 +41,22 @@ public class SwerveCoordinator extends SubsystemBase {
       double turnAngle = turnPower * 45.0;
 
       // If the left front Module is in the front
-      if (SwerveModule.closestAngle(direction, 135.0) >= 90.0) {leftFrontModule.setDirection(direction + turnAngle);}
+      if ((Math.abs(SwerveModule.closestAngle(direction, 135.0))) >= 90.0) {leftFrontModule.setDirection(direction + turnAngle);}
       // if it's in the back
       else {leftFrontModule.setDirection(direction - turnAngle);}
 
       // If the left back Module is in the front
-      if (SwerveModule.closestAngle(direction, 225.0) > 90.0) {leftBackModule.setDirection(direction + turnAngle);}
+      if ((Math.abs(SwerveModule.closestAngle(direction, 225.0))) > 90.0) {leftBackModule.setDirection(direction + turnAngle);}
       // if it's in the back
       else {leftBackModule.setDirection(direction - turnAngle);}
 
       // If the right front Module is in the front
-      if (SwerveModule.closestAngle(direction, 45.0) > 90.0) {rightFrontModule.setDirection(direction + turnAngle);}
+      if ((Math.abs(SwerveModule.closestAngle(direction, 45.0))) > 90.0) {rightFrontModule.setDirection(direction + turnAngle);}
       // if it's in the back
       else {rightFrontModule.setDirection(direction - turnAngle);}
 
       // If the right back Module is in the front
-      if (SwerveModule.closestAngle(direction, 315.0) >= 90.0) {rightBackModule.setDirection(direction + turnAngle);}
+      if ((Math.abs(SwerveModule.closestAngle(direction, 315.0))) >= 90.0) {rightBackModule.setDirection(direction + turnAngle);}
       // if it's in the back
       else {rightBackModule.setDirection(direction - turnAngle);}
   
