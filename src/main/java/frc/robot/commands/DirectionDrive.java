@@ -24,7 +24,7 @@ public class DirectionDrive extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {swerveDrive.reset();}
+  public void initialize() {swerveDrive.resetDriveEncoders();}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -36,5 +36,5 @@ public class DirectionDrive extends CommandBase {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {return swerveDrive.reached(distanceMeters);}
+  public boolean isFinished() {return swerveDrive.reachedDistance(distanceMeters);}
 }

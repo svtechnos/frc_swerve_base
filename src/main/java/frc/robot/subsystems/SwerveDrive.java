@@ -57,7 +57,7 @@ public class SwerveDrive extends SubsystemBase {
     LEFT_BACK_DRIVE_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.DRIVE_MOTOR_RAMP_RATE);
     RIGHT_FRONT_DRIVE_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.DRIVE_MOTOR_RAMP_RATE);
     RIGHT_BACK_DRIVE_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.DRIVE_MOTOR_RAMP_RATE);
-
+    
     LEFT_FRONT_TURN_MOTOR = new CANSparkMax(Constants.DeviceIDs.LEFT_FRONT_TURN_ID, MotorType.kBrushless);
     LEFT_BACK_TURN_MOTOR = new CANSparkMax(Constants.DeviceIDs.LEFT_BACK_TURN_ID, MotorType.kBrushless);
     RIGHT_FRONT_TURN_MOTOR = new CANSparkMax(Constants.DeviceIDs.RIGHT_FRONT_TURN_ID, MotorType.kBrushless);
@@ -87,14 +87,14 @@ public class SwerveDrive extends SubsystemBase {
     // SwerveCoordinator
     SWERVE_COORDINATOR = new SwerveCoordinator(LEFT_FRONT_MODULE, LEFT_BACK_MODULE, RIGHT_FRONT_MODULE, RIGHT_BACK_MODULE);
   }
-  public void reset(){
+  public void resetDriveEncoders(){
     LEFT_FRONT_DRIVE_DISTANCE_ENCODER.setPosition(0);
     LEFT_BACK_DRIVE_DISTANCE_ENCODER.setPosition(0);
     RIGHT_FRONT_DRIVE_DISTANCE_ENCODER.setPosition(0);
     RIGHT_BACK_DRIVE_DISTANCE_ENCODER.setPosition(0);
   }
 
-  public boolean reached(double distanceMeters){
+  public boolean reachedDistance(double distanceMeters){
     return (LEFT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters)&&(LEFT_BACK_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters)&&(RIGHT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters)&&(RIGHT_BACK_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters);
   }
 

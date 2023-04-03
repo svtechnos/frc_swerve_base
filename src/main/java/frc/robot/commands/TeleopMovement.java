@@ -6,11 +6,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrive;
 
 public class TeleopMovement extends CommandBase {
   Joystick joystick;
   SwerveDrive swerveDrive;
+  double direction=0;
   /** Creates a new TeleopMovement. */
   public TeleopMovement(SwerveDrive swerveDrive, Joystick joystick) {
     this.joystick = joystick;
@@ -24,7 +26,11 @@ public class TeleopMovement extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute(){swerveDrive.SWERVE_COORDINATOR.swerveMove(joystick.getDirectionDegrees()-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude(), joystick.getZ());}
+  public void execute(){
+    if(joystick.getMagnitude()>Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE){direction = (joystick.getDirectionDegrees()<0)?joystick.getDirectionDegrees()+360:joystick.getDirectionDegrees();}
+    //swerveDrive.SWERVE_COORDINATOR.swerveMove(joystick.getDirectionDegrees()-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude(), joystick.getZ());
+    swerveDrive.SWERVE_COORDINATOR.swerveMove(direction, joystick.getMagnitude(), joystick.getZ());
+  }
 
   // Called once the command ends or is interrupted.
   @Override

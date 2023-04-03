@@ -31,7 +31,7 @@ public class ChargeStation extends CommandBase {
   public void execute() {
     double tiltError = SwerveDrive.GYRO.getRoll() - levelRoll;
     double dirError = SwerveDrive.GYRO.getYaw() - startingYaw;
-    if(tiltError>10) {starting=false;}
+    if(tiltError>Constants.ChargeStationConstants.START_CLIMB_ANGLE) {starting=false;}
     if(starting){swervedrive.SWERVE_COORDINATOR.translateTurn(Constants.Directions.FORWARD, Constants.ChargeStationConstants.START_SPEED, dirError*Constants.ChargeStationConstants.YAW_P);}
     else{
       if(tiltError>Constants.ChargeStationConstants.DEADZONE){swervedrive.SWERVE_COORDINATOR.translateTurn(Constants.Directions.FORWARD, tiltError*Constants.ChargeStationConstants.TILT_P, dirError*Constants.ChargeStationConstants.YAW_P);}

@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SwerveCoordinator extends SubsystemBase {
-  SwerveModule leftFrontModule;
-  SwerveModule leftBackModule;
-  SwerveModule rightFrontModule;
-  SwerveModule rightBackModule;
+  public SwerveModule leftFrontModule;
+  public SwerveModule leftBackModule;
+  public SwerveModule rightFrontModule;
+  public SwerveModule rightBackModule;
   /** Creates a new SwerveCoordinator. */
   public SwerveCoordinator(SwerveModule leftFrontModule, SwerveModule leftBackModule, SwerveModule rightFrontModule, SwerveModule rightBackModule) {
     this.leftFrontModule = leftFrontModule;
@@ -36,41 +36,43 @@ public class SwerveCoordinator extends SubsystemBase {
     rightFrontModule.setSpeed(power);
     rightBackModule.setSpeed(power);
   }
-  public void translateTurn(double direction, double translatePower, double turnPower){
+  public void translateTurn(double direction, double translatePower, double twistPower){
       // turnAngle goes from 45 to -45
-      double turnAngle = turnPower * 45.0;
+      double twistAngle = twistPower * 45.0;
 
       // If the left front Module is in the front
-      if ((Math.abs(SwerveModule.closestAngle(direction, 135.0))) >= 90.0) {leftFrontModule.setDirection(direction + turnAngle);}
+      if ((Math.abs(SwerveModule.closestAngle(direction, 135.0))) >= 90.0) {leftFrontModule.setDirection(direction + twistAngle);}
       // if it's in the back
-      else {leftFrontModule.setDirection(direction - turnAngle);}
+      else {leftFrontModule.setDirection(direction - twistAngle);}
 
       // If the left back Module is in the front
-      if ((Math.abs(SwerveModule.closestAngle(direction, 225.0))) > 90.0) {leftBackModule.setDirection(direction + turnAngle);}
+      if ((Math.abs(SwerveModule.closestAngle(direction, 225.0))) > 90.0) {leftBackModule.setDirection(direction + twistAngle);}
       // if it's in the back
-      else {leftBackModule.setDirection(direction - turnAngle);}
+      else {leftBackModule.setDirection(direction - twistAngle);}
 
       // If the right front Module is in the front
-      if ((Math.abs(SwerveModule.closestAngle(direction, 45.0))) > 90.0) {rightFrontModule.setDirection(direction + turnAngle);}
+      if ((Math.abs(SwerveModule.closestAngle(direction, 45.0))) > 90.0) {rightFrontModule.setDirection(direction + twistAngle);}
       // if it's in the back
-      else {rightFrontModule.setDirection(direction - turnAngle);}
+      else {rightFrontModule.setDirection(direction - twistAngle);}
 
       // If the right back Module is in the front
-      if ((Math.abs(SwerveModule.closestAngle(direction, 315.0))) >= 90.0) {rightBackModule.setDirection(direction + turnAngle);}
+      if ((Math.abs(SwerveModule.closestAngle(direction, 315.0))) >= 90.0) {rightBackModule.setDirection(direction + twistAngle);}
       // if it's in the back
-      else {rightBackModule.setDirection(direction - turnAngle);}
+      else {rightBackModule.setDirection(direction - twistAngle);}
   
       leftFrontModule.setSpeed(translatePower);
       leftBackModule.setSpeed(translatePower);
       rightFrontModule.setSpeed(translatePower);
       rightBackModule.setSpeed(translatePower);
   }
-  public void swerveMove(double direction, double translatePower, double turnPower) {
-    if ((SwerveModule.deadzone(translatePower, Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE) == 0) && (turnPower != 0)){inplaceTurn(turnPower);}
-    else {translateTurn(direction, translatePower, turnPower);}
+  public void swerveMove(double direction, double translatePower, double twistPower) {
+    translatePower = SwerveModule.deadzone(translatePower, Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE);
+    twistPower = SwerveModule.deadzone(twistPower, Constants.SwerveConstants.TWIST_DEADZONE);
+    if ((translatePower == 0) && (twistPower != 0)){inplaceTurn(twistPower);}
+    else {translateTurn(direction, translatePower, twistPower);}
   }
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // This method will be called once per scheduler run#
   }
 }

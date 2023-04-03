@@ -31,11 +31,17 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.set(speed*motorDirection);
   }
   public void setDirection(double direction){
-    double currentAngle = (turnEncoder.getSelectedSensorPosition()*(360/4096)+turnEncoderOffset)%360;
-    double deltaAngle = closestAngle(currentAngle, direction);
-    double deltaAngleFlipped = closestAngle(currentAngle, direction+180);
-    if (Math.abs(deltaAngle) <= Math.abs(deltaAngleFlipped)){motorDirection = 1;turnMotor.set(clipSpeed((deadzone(deltaAngle, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));}
-    else {motorDirection = -1;turnMotor.set(clipSpeed((deadzone(deltaAngleFlipped, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));}
+    double currentAngle = currentAngle();
+    double deltaAngle = -closestAngle(currentAngle, direction);
+    double deltaAngleFlipped = -closestAngle(currentAngle, direction+180.0);
+    if (Math.abs(deltaAngle) <= Math.abs(deltaAngleFlipped)){
+      motorDirection = 1;
+      turnMotor.set(clipSpeed((deadzone(deltaAngle, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));
+    }
+    else {
+      motorDirection = -1;
+      turnMotor.set(clipSpeed((deadzone(deltaAngleFlipped, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));
+    }
   }
   public static double closestAngle(double currentAngle, double targetAngle){
     // get direction
@@ -45,11 +51,14 @@ public class SwerveModule extends SubsystemBase {
     return deltaAngle;
   }
   public static double deadzone(double number, double deadzone){
-    number = (Math.abs(number)<deadzone)?number=0:number;
+    number = (Math.abs(number)<deadzone)?number=0.0:number;
     return number;
   }
   public static double clipSpeed(double speed, double clipSpeed){
     speed = (Math.abs(speed)>clipSpeed)?clipSpeed:speed;
     return speed;
+  }
+  public double currentAngle(){
+    return (((turnEncoder.getSelectedSensorPosition())*(360.0/4096.0))-turnEncoderOffset)%360;
   }
 }
