@@ -22,16 +22,17 @@ public class TeleopMovement extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize(){}
-
+  public void initialize(){SwerveDrive.GYRO.setYaw(0);}
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute(){
-    if(joystick.getMagnitude()>Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE){direction = (joystick.getDirectionDegrees()<0)?joystick.getDirectionDegrees()+360:joystick.getDirectionDegrees();}
-    //swerveDrive.SWERVE_COORDINATOR.swerveMove(joystick.getDirectionDegrees()-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude(), joystick.getZ());
-    swerveDrive.SWERVE_COORDINATOR.swerveMove(direction, joystick.getMagnitude(), joystick.getZ());
+    if(joystick.getMagnitude()>Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE){
+      direction = joystick.getDirectionDegrees();
+      direction = (direction<0)?-direction:-direction+360;
+    }
+    swerveDrive.SWERVE_COORDINATOR.swerveMove(direction-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude(), joystick.getZ());
+    //swerveDrive.SWERVE_COORDINATOR.swerveMove(direction, joystick.getMagnitude(), joystick.getZ());
   }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {swerveDrive.SWERVE_COORDINATOR.swerveMove(0,0,0);}

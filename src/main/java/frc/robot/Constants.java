@@ -24,7 +24,7 @@ public final class Constants {
     public static final int RIGHT_BACK_DRIVE_ID=6;
     public static final int RIGHT_BACK_TURN_ID=2;
     public static final int RIGHT_BACK_TURN_ENCODER_ID=22;
-    public static final int GYRO_DEVICE_ID=10;
+    public static final int GYRO_DEVICE_ID=11;
   }
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
@@ -48,8 +48,8 @@ public final class Constants {
     public static final double TURN_ANGLE_DEADZONE = 2;
     public static final double MOVEMENT_SPEED_DEADZONE = 0.05;
     public static final double CLIP_SPEED = 0.5;
-    public static final double DRIVE_MOTOR_RAMP_RATE = 0.1;
-    public static final double TURN_MOTOR_RAMP_RATE = 0.1;
-    public static final double TWIST_DEADZONE = 0.15;
+    public static final double DRIVE_MOTOR_RAMP_RATE = 0.3;
+    public static final double TURN_MOTOR_RAMP_RATE = 0.3;
+    public static final double TWIST_DEADZONE = 0.1;
   }
 }

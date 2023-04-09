@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -57,6 +58,10 @@ public class SwerveDrive extends SubsystemBase {
     LEFT_BACK_DRIVE_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.DRIVE_MOTOR_RAMP_RATE);
     RIGHT_FRONT_DRIVE_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.DRIVE_MOTOR_RAMP_RATE);
     RIGHT_BACK_DRIVE_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.DRIVE_MOTOR_RAMP_RATE);
+    LEFT_FRONT_DRIVE_MOTOR.setIdleMode(IdleMode.kBrake);
+    LEFT_BACK_DRIVE_MOTOR.setIdleMode(IdleMode.kBrake);
+    RIGHT_FRONT_DRIVE_MOTOR.setIdleMode(IdleMode.kBrake);
+    RIGHT_BACK_DRIVE_MOTOR.setIdleMode(IdleMode.kBrake);
     
     LEFT_FRONT_TURN_MOTOR = new CANSparkMax(Constants.DeviceIDs.LEFT_FRONT_TURN_ID, MotorType.kBrushless);
     LEFT_BACK_TURN_MOTOR = new CANSparkMax(Constants.DeviceIDs.LEFT_BACK_TURN_ID, MotorType.kBrushless);
