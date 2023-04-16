@@ -27,15 +27,18 @@ public class TeleopMovement extends CommandBase {
   @Override
   public void execute(){
     if(joystick.getMagnitude()>Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE){
-      direction = joystick.getDirectionDegrees();
-      direction = (direction<0)?-direction:-direction+360;
+      direction = (joystick.getDirectionDegrees()<0)?-joystick.getDirectionDegrees():-joystick.getDirectionDegrees()+360;
     }
-    swerveDrive.SWERVE_COORDINATOR.swerveMove(direction-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude(), joystick.getZ());
+    double poten=joystick.getThrottle();
+    if(poten<0.1){
+      poten=0.1;
+    }
+    swerveDrive.SWERVE_COORDINATOR.swerveMove(direction-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude()*poten, joystick.getZ()/2);
     //swerveDrive.SWERVE_COORDINATOR.swerveMove(direction, joystick.getMagnitude(), joystick.getZ());
   }
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {swerveDrive.SWERVE_COORDINATOR.swerveMove(0,0,0);}
+  public void end(boolean interrupted) {swerveDrive.SWERVE_COORDINATOR.swerveMove(direction,0,0);}
 
   // Returns true when the command should end.
   @Override

@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ChargeStation;
+import frc.robot.commands.DeBurger;
+import frc.robot.commands.DirectionDrive;
 import frc.robot.commands.TeleopMovement;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.Joystick;
@@ -56,7 +58,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new ChargeStation(swerveDrive);
+    return new DirectionDrive(swerveDrive,7.62,Constants.Directions.FORWARD,0.3);
   }
   public Command getTeleopCommand() {
     return new TeleopMovement(swerveDrive, m_driverController);

@@ -72,10 +72,14 @@ public class SwerveDrive extends SubsystemBase {
     RIGHT_FRONT_TURN_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.TURN_MOTOR_RAMP_RATE);
     RIGHT_BACK_TURN_MOTOR.setOpenLoopRampRate(Constants.SwerveConstants.TURN_MOTOR_RAMP_RATE);
     // Encoders
-    LEFT_FRONT_DRIVE_DISTANCE_ENCODER = LEFT_FRONT_TURN_MOTOR.getEncoder();
-    LEFT_BACK_DRIVE_DISTANCE_ENCODER = LEFT_BACK_TURN_MOTOR.getEncoder();
-    RIGHT_FRONT_DRIVE_DISTANCE_ENCODER = RIGHT_FRONT_TURN_MOTOR.getEncoder();
-    RIGHT_BACK_DRIVE_DISTANCE_ENCODER = RIGHT_BACK_TURN_MOTOR.getEncoder();
+    LEFT_FRONT_DRIVE_DISTANCE_ENCODER = LEFT_FRONT_DRIVE_MOTOR.getEncoder();
+    LEFT_BACK_DRIVE_DISTANCE_ENCODER = LEFT_BACK_DRIVE_MOTOR.getEncoder();
+    RIGHT_FRONT_DRIVE_DISTANCE_ENCODER = RIGHT_FRONT_DRIVE_MOTOR.getEncoder();
+    RIGHT_BACK_DRIVE_DISTANCE_ENCODER = RIGHT_BACK_DRIVE_MOTOR.getEncoder();
+    LEFT_FRONT_DRIVE_DISTANCE_ENCODER.setPositionConversionFactor(0.053*(300.0/318.0)*(300.0/318.0)*(300.0/308));
+    LEFT_BACK_DRIVE_DISTANCE_ENCODER.setPositionConversionFactor(0.053*(300.0/318.0)*(300.0/318.0)*(300.0/308));
+    RIGHT_FRONT_DRIVE_DISTANCE_ENCODER.setPositionConversionFactor(0.053*(300.0/318.0)*(300.0/318.0)*(300.0/308));
+    RIGHT_BACK_DRIVE_DISTANCE_ENCODER.setPositionConversionFactor(0.053*(300.0/318.0)*(300.0/318.0)*(300.0/308));
 
     LEFT_FRONT_TURN_ENCODER = new WPI_TalonSRX(Constants.DeviceIDs.LEFT_FRONT_TURN_ENCODER_ID);
     LEFT_BACK_TURN_ENCODER = new WPI_TalonSRX(Constants.DeviceIDs.LEFT_BACK_TURN_ENCODER_ID);
@@ -98,13 +102,17 @@ public class SwerveDrive extends SubsystemBase {
     RIGHT_FRONT_DRIVE_DISTANCE_ENCODER.setPosition(0);
     RIGHT_BACK_DRIVE_DISTANCE_ENCODER.setPosition(0);
   }
-
   public boolean reachedDistance(double distanceMeters){
-    return (LEFT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters)&&(LEFT_BACK_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters)&&(RIGHT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters)&&(RIGHT_BACK_DRIVE_DISTANCE_ENCODER.getPosition()>distanceMeters);
+    distanceMeters=Math.abs(distanceMeters);
+    double lfcur=Math.abs(LEFT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition());
+    double rfcur=Math.abs(RIGHT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition());
+    double lbcur=Math.abs(LEFT_BACK_DRIVE_DISTANCE_ENCODER.getPosition());
+    double rbcur=Math.abs(RIGHT_BACK_DRIVE_DISTANCE_ENCODER.getPosition());
+
+    System.out.println("lfval: "+lfcur);
+    return (lfcur>distanceMeters)&&(lbcur>distanceMeters)&&(rfcur>distanceMeters)&&(rbcur>distanceMeters);
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+  public void periodic() {}
 }

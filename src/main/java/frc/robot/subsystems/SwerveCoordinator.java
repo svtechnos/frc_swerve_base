@@ -22,100 +22,62 @@ public class SwerveCoordinator extends SubsystemBase {
   public void lockPosition() {
     leftFrontModule.setDirection(135.0);
     leftBackModule.setDirection(45.0);
-    // bitofissue
-    rightFrontModule.setDirection(-45.0);
-    rightBackModule.setDirection(-135.0);
+    rightFrontModule.setDirection(225.0);
+    rightBackModule.setDirection(135.0);
   }
   public void inplaceTurn(double power){
     leftFrontModule.setDirection(315.0);
     leftBackModule.setDirection(45.0);
-    // bitofissue
     rightFrontModule.setDirection(225.0);
     rightBackModule.setDirection(135.0);
-    //might have to fix stuff
     leftFrontModule.setSpeed(power);
     leftBackModule.setSpeed(power);
     rightFrontModule.setSpeed(power);
     rightBackModule.setSpeed(power);
   }
-  /*public void translateTurn(double direction, double translatePower, double twistPower){
-    System.out.println("directionNEW: "+direction);
-    if(false){
-        // turnAngle goes from 45 to -45
-        double twistAngle = twistPower * 45.0;
-        twistAngle=30;
-        direction=direction%360;
-        // If the left front Module is in the front
-        //og:135
-        if ((Math.abs(SwerveModule.closestAngle(direction, 315.0))) >= 90.0) {System.out.println("leftfront=front");leftFrontModule.setDirection((direction + twistAngle)%360);}
-        // if it's in the back
-        else {System.out.println("leftfront=back");leftFrontModule.setDirection((direction - twistAngle)%360);}
-
-        //og: 225
-        // If the left back Module is in the front
-        if ((Math.abs(SwerveModule.closestAngle(direction, 225.0))) > 90.0) {System.out.println("leftback=front");leftBackModule.setDirection((direction + twistAngle)%360);}
-        // if it's in the back
-        else {leftBackModule.setDirection((direction - twistAngle)%360);System.out.println("leftback=back");}
-
-        //og:45
-        // If the right front Module is in the front
-        if ((Math.abs(SwerveModule.closestAngle(direction, 45.0))) > 90.0) {System.out.println("rightfront=front");rightFrontModule.setDirection((direction + twistAngle)%360);}
-        // if it's in the back
-        else {rightFrontModule.setDirection((direction - twistAngle)%360);System.out.println("rightfront=back");}
-
-        //og:315
-        // If the right back Module is in the front
-        if ((Math.abs(SwerveModule.closestAngle(direction, 135.0))) >= 90.0) {System.out.println("rightback=front");rightBackModule.setDirection((direction + twistAngle)%360);}
-        // if it's in the back
-        else {rightBackModule.setDirection((direction - twistAngle)%360);System.out.println("rightback=back");}
-    }
-    else{
-
-      // front facing {lf,rf}
-      // back facing {lb,rb}
-      double sub=0;
-      double sideOne = (direction+sub)%360;
-      double sideTwo = (direction-sub)%360;
-      leftFrontModule.setDirection(sideOne);
-      leftBackModule.setDirection(sideTwo);
-      rightBackModule.setDirection(sideTwo);
-      rightFrontModule.setDirection(sideOne);
-    }
-      double gain = 1;
-      leftFrontModule.setSpeed(gain*translatePower);
-      leftBackModule.setSpeed(gain*translatePower); 
-      rightFrontModule.setSpeed(translatePower/gain);
-      rightBackModule.setSpeed(translatePower/gain);
-  }*/
   public void swerveMove(double direction, double translatePower, double twistPower) {
     translatePower = SwerveModule.deadzone(translatePower, Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE);
     twistPower = SwerveModule.deadzone(twistPower, Constants.SwerveConstants.TWIST_DEADZONE);
     if ((translatePower == 0) && (twistPower != 0)){inplaceTurn(twistPower/2);}
     else {translateTurn(direction, translatePower, SwerveModule.deadzone(twistPower,0.3));}
   }
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run#
+  
+  public double angleCalculator(double direction, double translatePower, double twistPower, double twistVectorDirection){
+    double yval= ((translatePower * Math.sin(direction*2.0*Math.PI/180.0)) + (twistPower*Math.cos(twistVectorDirection*Math.PI/180.0)));
+    double xval= ((translatePower * Math.sin(direction*2.0*Math.PI/180.0)) + (twistPower*Math.cos(twistVectorDirection*Math.PI/180.0)));
+    return Math.atan2(yval,xval);
   }
+
+  public double speedCalculator(double direction, double translatePower, double twistPower, double twistVectorDirection){
+    double yval= ((translatePower * Math.sin(direction*2.0*Math.PI/180.0)) + (twistPower*Math.cos(twistVectorDirection*Math.PI/180.0)));
+    double xval= ((translatePower * Math.sin(direction*2.0*Math.PI/180.0)) + (twistPower*Math.cos(twistVectorDirection*Math.PI/180.0)));
+    return Math.sqrt(yval*yval + xval*xval);
+  }
+
   public void translateTurn(double direction, double translatePower, double twistPower){
-    // turnAngle goes from 45 to -45
-    double twistAngle = twistPower * -45.0;
-    //twistAngle=30;
-    direction=direction%360;
-    // If the left front Module is in the front
-    //og:135
+    direction = direction%360;
+  
+    leftFrontModule.setDirection(angleCalculator(direction, translatePower, twistPower, 315));
+    leftBackModule.setDirection(angleCalculator(direction, translatePower, twistPower, 45));
+    rightFrontModule.setDirection(angleCalculator(direction, translatePower, twistPower, 225));
+    rightBackModule.setDirection(angleCalculator(direction, translatePower, twistPower, 135));
+    
+    leftFrontModule.setSpeed(speedCalculator(direction, translatePower, twistPower, 315));
+    leftBackModule.setSpeed(speedCalculator(direction, translatePower, twistPower, 45));
+    rightFrontModule.setSpeed(speedCalculator(direction, translatePower, twistPower, 225));
+    rightBackModule.setSpeed(speedCalculator(direction, translatePower, twistPower, 135));
+    /*
     if ((Math.abs(SwerveModule.closestAngle(direction, 0))) <= 45) 
     {
-      System.out.println("Front facing");
+      //System.out.println("Front facing");
       leftFrontModule.setDirection((direction + twistAngle)%360);
       rightFrontModule.setDirection((direction + twistAngle)%360);
       leftBackModule.setDirection((direction - twistAngle)%360);
       rightBackModule.setDirection((direction - twistAngle)%360);
     }
-    // if it's in the back
     else if ((Math.abs(SwerveModule.closestAngle(direction, 90))) <= 45) 
     {
-      System.out.println("left facing");
+      //System.out.println("left facing");
       leftFrontModule.setDirection((direction + twistAngle)%360);
       rightFrontModule.setDirection((direction - twistAngle)%360);
       leftBackModule.setDirection((direction + twistAngle)%360);
@@ -123,14 +85,14 @@ public class SwerveCoordinator extends SubsystemBase {
 
     }else if ((Math.abs(SwerveModule.closestAngle(direction, 180))) <= 45) 
     {
-      System.out.println("back facing");
+      //System.out.println("back facing");
       leftFrontModule.setDirection((direction - twistAngle)%360);
       rightFrontModule.setDirection((direction - twistAngle)%360);
       leftBackModule.setDirection((direction + twistAngle)%360);
       rightBackModule.setDirection((direction + twistAngle)%360);
     }else if ((Math.abs(SwerveModule.closestAngle(direction, 270))) <= 45) 
     {
-      System.out.println("right facing");
+      //System.out.println("right facing");
       leftFrontModule.setDirection((direction - twistAngle)%360);
       rightFrontModule.setDirection((direction + twistAngle)%360);
       leftBackModule.setDirection((direction - twistAngle)%360);
@@ -140,6 +102,8 @@ public class SwerveCoordinator extends SubsystemBase {
       leftFrontModule.setSpeed(gain*translatePower);
       leftBackModule.setSpeed(gain*translatePower);
       rightFrontModule.setSpeed(translatePower/gain);
-      rightBackModule.setSpeed(translatePower/gain);
+      rightBackModule.setSpeed(translatePower/gain);*/
   }
+  @Override
+  public void periodic() {}
 }
