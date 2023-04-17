@@ -10,10 +10,12 @@ import frc.robot.commands.DeBurger;
 import frc.robot.commands.DirectionDrive;
 import frc.robot.commands.TeleopMovement;
 import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.cameraserver.CameraServer;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -58,7 +60,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new DirectionDrive(swerveDrive,7.62,Constants.Directions.FORWARD,0.3);
+    return new DirectionDrive(swerveDrive,1,Constants.Directions.FORWARD,0.2);
   }
   public Command getTeleopCommand() {
     return new TeleopMovement(swerveDrive, m_driverController);

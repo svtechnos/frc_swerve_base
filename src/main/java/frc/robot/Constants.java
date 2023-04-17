@@ -6,10 +6,11 @@ package frc.robot;
 
 public final class Constants {
   public static class Offsets {
-    public static final double LEFT_FRONT_TURN_ENCODER_OFFSET = 23.2929;
-    public static final double LEFT_BACK_TURN_ENCODER_OFFSET = 321.3847;
+    public static final double LEFT_FRONT_TURN_ENCODER_OFFSET = 29.2929;
+    public static final double LEFT_BACK_TURN_ENCODER_OFFSET = 316.3847;
     public static final double RIGHT_FRONT_TURN_ENCODER_OFFSET = 4.9218;
     public static final double RIGHT_BACK_TURN_ENCODER_OFFSET = 242.2714;
+  
   }
   public static class DeviceIDs {
     public static final int LEFT_FRONT_DRIVE_ID=5;
@@ -27,8 +28,8 @@ public final class Constants {
     public static final int GYRO_DEVICE_ID=11;
   }
   public static class OperatorConstants {
-    public static final int DRIVER_CONTROLLER_PORT = 0;
-    public static final int ARM_CONTROLLER_PORT = 1;
+    public static final int DRIVER_CONTROLLER_PORT = 1;
+    public static final int ARM_CONTROLLER_PORT = 0;
   }
   public static class Directions {
     public static final double FORWARD = 0;
@@ -37,10 +38,10 @@ public final class Constants {
     public static final double RIGHT = 270;
   }
   public static class ChargeStationConstants {
-    public static final double YAW_P = 0.01;
-    public static final double TILT_P = 0.01;
+    public static final double YAW_P = 0.012;
+    public static final double TILT_P = 0.015;
     public static final double DEADZONE = 1;
-    public static final double START_SPEED = 0.15;
+    public static final double START_SPEED = 0.2;
     public static final double START_CLIMB_ANGLE = 10;
   }
   public static class SwerveConstants {
@@ -51,6 +52,8 @@ public final class Constants {
     public static final double DRIVE_MOTOR_RAMP_RATE = 0.3;
     public static final double TURN_MOTOR_RAMP_RATE = 0.3;
     public static final double TWIST_DEADZONE = 0.08;
+    public static final double GAIN_BIAS=0.3; 
+
   }
   public static class DirectionDriveConstants{
     public static final double YAW_P=0.01;

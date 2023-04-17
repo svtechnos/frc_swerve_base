@@ -35,11 +35,11 @@ public class SwerveCoordinator extends SubsystemBase {
     rightFrontModule.setSpeed(power);
     rightBackModule.setSpeed(power);
   }
-  public void swerveMove(double direction, double translatePower, double twistPower) {
+  public void swerveMove(double direction, double translatePower, double twistPower,double modifier) {
     translatePower = SwerveModule.deadzone(translatePower, Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE);
     twistPower = SwerveModule.deadzone(twistPower, Constants.SwerveConstants.TWIST_DEADZONE);
-    if ((translatePower == 0) && (twistPower != 0)){inplaceTurn(twistPower/2);}
-    else {translateTurn(direction, translatePower, SwerveModule.deadzone(twistPower,0.3));}
+    if ((translatePower == 0) && (twistPower != 0)){inplaceTurn(twistPower*modifier);}
+    else {translateTurn(direction, translatePower, SwerveModule.deadzone(twistPower,0.2));}
   }
   
   public double angleCalculator(double direction, double translatePower, double twistPower, double twistVectorDirection){
@@ -55,8 +55,9 @@ public class SwerveCoordinator extends SubsystemBase {
   }
 
   public void translateTurn(double direction, double translatePower, double twistPower){
+    double twistAngle=twistPower*-45;
     direction = direction%360;
-  
+    /* 
     leftFrontModule.setDirection(angleCalculator(direction, translatePower, twistPower, 315));
     leftBackModule.setDirection(angleCalculator(direction, translatePower, twistPower, 45));
     rightFrontModule.setDirection(angleCalculator(direction, translatePower, twistPower, 225));
@@ -66,7 +67,7 @@ public class SwerveCoordinator extends SubsystemBase {
     leftBackModule.setSpeed(speedCalculator(direction, translatePower, twistPower, 45));
     rightFrontModule.setSpeed(speedCalculator(direction, translatePower, twistPower, 225));
     rightBackModule.setSpeed(speedCalculator(direction, translatePower, twistPower, 135));
-    /*
+    */
     if ((Math.abs(SwerveModule.closestAngle(direction, 0))) <= 45) 
     {
       //System.out.println("Front facing");
@@ -102,7 +103,7 @@ public class SwerveCoordinator extends SubsystemBase {
       leftFrontModule.setSpeed(gain*translatePower);
       leftBackModule.setSpeed(gain*translatePower);
       rightFrontModule.setSpeed(translatePower/gain);
-      rightBackModule.setSpeed(translatePower/gain);*/
+      rightBackModule.setSpeed(translatePower/gain);
   }
   @Override
   public void periodic() {}
