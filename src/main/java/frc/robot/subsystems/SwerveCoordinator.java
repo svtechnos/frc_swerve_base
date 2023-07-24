@@ -4,20 +4,35 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import com.ctre.phoenix.sensors.Pigeon2;
+
 
 public class SwerveCoordinator extends SubsystemBase {
   public SwerveModule leftFrontModule;
   public SwerveModule leftBackModule;
   public SwerveModule rightFrontModule;
   public SwerveModule rightBackModule;
+  public SwerveDriveKinematics m_kinematics;
+    
+  // Gyro
+  public static Pigeon2 GYRO;
+
   /** Creates a new SwerveCoordinator. */
   public SwerveCoordinator(SwerveModule leftFrontModule, SwerveModule leftBackModule, SwerveModule rightFrontModule, SwerveModule rightBackModule) {
     this.leftFrontModule = leftFrontModule;
     this.leftBackModule = leftBackModule;
     this.rightFrontModule = rightFrontModule;
     this.rightBackModule = rightBackModule;
+    GYRO = new Pigeon2(Constants.DeviceIDs.GYRO_DEVICE_ID, "rio");
+    m_kinematics= new SwerveDriveKinematics(
+     Constants.SwerveConstants.m_frontLeftLocation, Constants.SwerveConstants.m_frontRightLocation, Constants.SwerveConstants.m_backLeftLocation, Constants.SwerveConstants.m_backRightLocation
+    );
   }
   public void lockPosition() {
     leftFrontModule.setDirection(135.0);
@@ -35,11 +50,26 @@ public class SwerveCoordinator extends SubsystemBase {
     rightFrontModule.setSpeed(power);
     rightBackModule.setSpeed(power);
   }
-  public void swerveMove(double direction, double translatePower, double twistPower,double modifier) {
-    translatePower = SwerveModule.deadzone(translatePower, Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE);
-    twistPower = SwerveModule.deadzone(twistPower, Constants.SwerveConstants.TWIST_DEADZONE);
-    if ((translatePower == 0) && (twistPower != 0)){inplaceTurn(twistPower*modifier);}
-    else {translateTurn(direction, translatePower, SwerveModule.deadzone(twistPower,0.2));}
+  public void swerveMove(double xspeed, double yspeed, double twistPower, double modifier) {
+    //ChassisSpeeds speeds = new ChassisSpeeds(xspeed, yspeed, twistPower);
+
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xspeed, yspeed, twistPower, Rotation2d.fromDegrees(GYRO.getYaw()));
+
+    SwerveModuleState[] moduleStates = m_kinematics.toSwerveModuleStates(speeds);
+
+    // Front left module state
+    SwerveModuleState frontLeft = moduleStates[0];
+    // Front right module state
+    SwerveModuleState frontRight = moduleStates[1];
+    // Back left module state
+    SwerveModuleState backLeft = moduleStates[2];
+    // Back right module state
+    SwerveModuleState backRight = moduleStates[3];
+
+    leftFrontModule.move_module(frontLeft);
+    rightFrontModule.move_module(frontRight);
+    leftBackModule.move_module(backLeft);
+    rightBackModule.move_module(backRight);
   }
   
   public double angleCalculator(double direction, double translatePower, double twistPower, double twistVectorDirection){
@@ -54,8 +84,11 @@ public class SwerveCoordinator extends SubsystemBase {
     return Math.sqrt(yval*yval + xval*xval);
   }
 
+  public double currentAngle(){
+    return (((turnEncoder.getSelectedSensorPosition())*(360.0/4096.0))-turnEncoderOffset)%360;
+  }
 
-  public void translateTurn(double direction, double translatePower, double twistPower){
+  /*public void translateTurn(double direction, double translatePower, double twistPower){
     double twistAngle=twistPower*-45;
     direction = direction%360;
     /* 
@@ -68,7 +101,7 @@ public class SwerveCoordinator extends SubsystemBase {
     leftBackModule.setSpeed(speedCalculator(direction, translatePower, twistPower, 45));
     rightFrontModule.setSpeed(speedCalculator(direction, translatePower, twistPower, 225));
     rightBackModule.setSpeed(speedCalculator(direction, translatePower, twistPower, 135));
-    */
+    
     if ((Math.abs(SwerveModule.closestAngle(direction, 0))) <= 45) 
     {
       //System.out.println("Front facing");
@@ -105,7 +138,7 @@ public class SwerveCoordinator extends SubsystemBase {
       leftBackModule.setSpeed(gain*translatePower);
       rightFrontModule.setSpeed(translatePower/gain);
       rightBackModule.setSpeed(translatePower/gain);
-  }
+  }*/
   @Override
   public void periodic() {}
 }

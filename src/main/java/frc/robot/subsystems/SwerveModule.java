@@ -8,6 +8,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -30,10 +33,19 @@ public class SwerveModule extends SubsystemBase {
     pid = new PIDController(kP, kI, kD);
     pid.reset()
   }
+
+  public void move_module(SwerveModuleState target){
+    var targetOptimized = SwerveModuleState.optimize(target, Rotation2d.fromDegrees(currentAngle()));
+    turnMotor.set(pid.calculate(currentAngle(), targetOptimized.angle.getDegrees()));
+    driveMotor.set(targetOptimized.speedMetersPerSecond);
+
+  }
+
+
+  /* 
   public void setSpeed(double speed){
     driveMotor.set(speed*motorDirection);
   }
-  
   public void setDirection(double direction){
     double currentAngle = currentAngle();
     double deltaAngle = -closestAngle(currentAngle, direction);
@@ -49,7 +61,7 @@ public class SwerveModule extends SubsystemBase {
       motorDirection = -1;
       //turnMotor.set(clipSpeed((deadzone(deltaAngleFlipped, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));
     }
-  }
+  }*/
   public static double closestAngle(double currentAngle, double targetAngle){
     // get direction
     double deltaAngle = (targetAngle - currentAngle)%360;

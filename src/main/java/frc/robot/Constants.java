@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+
 public final class Constants {
   public static class Offsets {
     public static final double LEFT_FRONT_TURN_ENCODER_OFFSET = 29.2929;
@@ -70,6 +72,10 @@ public final class Constants {
     public static final double RIGHT_BACK_TURN_kI = 0;
     public static final double RIGHT_BACK_TURN_kD = 0;
 
+    public static final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
+    public static final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
+    public static final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
+    public static final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
 
 
 

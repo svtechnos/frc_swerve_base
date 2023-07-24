@@ -32,8 +32,9 @@ public class TeleopMovement extends CommandBase {
     
     double modifier=((-joystick.getThrottle()+1+Constants.SwerveConstants.GAIN_BIAS)/(2+Constants.SwerveConstants.GAIN_BIAS));
     //modifier=0;
-    swerveDrive.SWERVE_COORDINATOR.swerveMove(direction-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude()*modifier, joystick.getZ(),modifier);
- 
+    //swerveDrive.SWERVE_COORDINATOR.swerveMove(direction-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude()*modifier, joystick.getZ(),modifier);
+    swerveDrive.SWERVE_COORDINATOR.swerveMove(joystick.getX(), joystick.getY(), joystick.getZ(),modifier);
+
     //swerveDrive.SWERVE_COORDINATOR.swerveMove(direction-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude()*poten, joystick.getZ()/2);
     //swerveDrive.SWERVE_COORDINATOR.swerveMove(direction, joystick.getMagnitude(), joystick.getZ());
   }
