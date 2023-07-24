@@ -24,6 +24,7 @@ public class SwerveDrive extends SubsystemBase {
   SwerveModule LEFT_BACK_MODULE;
   SwerveModule RIGHT_FRONT_MODULE;
   SwerveModule RIGHT_BACK_MODULE;
+  
   //Motors
   private static CANSparkMax LEFT_FRONT_DRIVE_MOTOR;
   private static CANSparkMax LEFT_BACK_DRIVE_MOTOR;
@@ -45,6 +46,26 @@ public class SwerveDrive extends SubsystemBase {
   public static WPI_TalonSRX RIGHT_FRONT_TURN_ENCODER;
   public static WPI_TalonSRX RIGHT_BACK_TURN_ENCODER;
 
+  public static float LEFT_FRONT_TURN_kP;
+  public static float LEFT_FRONT_TURN_kI;
+  public static float LEFT_FRONT_TURN_kD;
+
+  public static float LEFT_BACK_TURN_kP;
+  public static float LEFT_BACK_TURN_kI;
+  public static float LEFT_BACK_TURN_kD;
+
+  public static float RIGHT_FRONT_TURN_kP;
+  public static float RIGHT_FRONT_TURN_kI;
+  public static float RIGHT_FRONT_TURN_kD;
+
+  public static float RIGHT_BACK_TURN_kP;
+  public static float RIGHT_BACK_TURN_kI;
+  public static float RIGHT_BACK_TURN_kD;
+
+
+
+
+  
   // Gyro
   public static Pigeon2 GYRO;
   
@@ -85,16 +106,19 @@ public class SwerveDrive extends SubsystemBase {
     LEFT_BACK_TURN_ENCODER = new WPI_TalonSRX(Constants.DeviceIDs.LEFT_BACK_TURN_ENCODER_ID);
     RIGHT_FRONT_TURN_ENCODER = new WPI_TalonSRX(Constants.DeviceIDs.RIGHT_FRONT_TURN_ENCODER_ID);
     RIGHT_BACK_TURN_ENCODER = new WPI_TalonSRX(Constants.DeviceIDs.RIGHT_BACK_TURN_ENCODER_ID);
+
+    
     // Gyro
     GYRO = new Pigeon2(Constants.DeviceIDs.GYRO_DEVICE_ID, "rio");
 
     // SwerveDriveModules
-    LEFT_FRONT_MODULE = new SwerveModule(LEFT_FRONT_TURN_ENCODER, LEFT_FRONT_TURN_MOTOR, LEFT_FRONT_DRIVE_MOTOR, LEFT_FRONT_DRIVE_DISTANCE_ENCODER, Constants.Offsets.LEFT_FRONT_TURN_ENCODER_OFFSET);
-    LEFT_BACK_MODULE = new SwerveModule(LEFT_BACK_TURN_ENCODER, LEFT_BACK_TURN_MOTOR, LEFT_BACK_DRIVE_MOTOR, LEFT_BACK_DRIVE_DISTANCE_ENCODER, Constants.Offsets.LEFT_BACK_TURN_ENCODER_OFFSET);
-    RIGHT_FRONT_MODULE = new SwerveModule(RIGHT_FRONT_TURN_ENCODER, RIGHT_FRONT_TURN_MOTOR, RIGHT_FRONT_DRIVE_MOTOR, RIGHT_FRONT_DRIVE_DISTANCE_ENCODER, Constants.Offsets.RIGHT_FRONT_TURN_ENCODER_OFFSET);
-    RIGHT_BACK_MODULE = new SwerveModule(RIGHT_BACK_TURN_ENCODER, RIGHT_BACK_TURN_MOTOR, RIGHT_BACK_DRIVE_MOTOR, RIGHT_BACK_DRIVE_DISTANCE_ENCODER, Constants.Offsets.RIGHT_BACK_TURN_ENCODER_OFFSET);
+    LEFT_FRONT_MODULE = new SwerveModule(LEFT_FRONT_TURN_ENCODER, LEFT_FRONT_TURN_MOTOR, LEFT_FRONT_DRIVE_MOTOR, LEFT_FRONT_DRIVE_DISTANCE_ENCODER, Constants.Offsets.LEFT_FRONT_TURN_ENCODER_OFFSET,Constants.SwerveConstants.LEFT_FRONT_TURN_kP,Constants.SwerveConstants.LEFT_FRONT_TURN_kI,Constants.SwerveConstants.LEFT_FRONT_TURN_kD);
+    LEFT_BACK_MODULE = new SwerveModule(LEFT_BACK_TURN_ENCODER, LEFT_BACK_TURN_MOTOR, LEFT_BACK_DRIVE_MOTOR, LEFT_BACK_DRIVE_DISTANCE_ENCODER, Constants.Offsets.LEFT_BACK_TURN_ENCODER_OFFSET,Constants.SwerveConstants.LEFT_BACK_TURN_kP,Constants.SwerveConstants.LEFT_BACK_TURN_kI,Constants.SwerveConstants.LEFT_BACK_TURN_kD);
+    RIGHT_FRONT_MODULE = new SwerveModule(RIGHT_FRONT_TURN_ENCODER, RIGHT_FRONT_TURN_MOTOR, RIGHT_FRONT_DRIVE_MOTOR, RIGHT_FRONT_DRIVE_DISTANCE_ENCODER, Constants.Offsets.RIGHT_FRONT_TURN_ENCODER_OFFSET,Constants.SwerveConstants.RIGHT_FRONT_TURN_kP,Constants.SwerveConstants.RIGHT_FRONT_TURN_kI,Constants.SwerveConstants.RIGHT_FRONT_TURN_kD);
+    RIGHT_BACK_MODULE = new SwerveModule(RIGHT_BACK_TURN_ENCODER, RIGHT_BACK_TURN_MOTOR, RIGHT_BACK_DRIVE_MOTOR, RIGHT_BACK_DRIVE_DISTANCE_ENCODER, Constants.Offsets.RIGHT_BACK_TURN_ENCODER_OFFSET,Constants.SwerveConstants.RIGHT_BACK_TURN_kP,Constants.SwerveConstants.RIGHT_BACK_TURN_kI,Constants.SwerveConstants.RIGHT_BACK_TURN_kD);
     // SwerveCoordinator
     SWERVE_COORDINATOR = new SwerveCoordinator(LEFT_FRONT_MODULE, LEFT_BACK_MODULE, RIGHT_FRONT_MODULE, RIGHT_BACK_MODULE);
+    
   }
   public void resetDriveEncoders(){
     LEFT_FRONT_DRIVE_DISTANCE_ENCODER.setPosition(0);

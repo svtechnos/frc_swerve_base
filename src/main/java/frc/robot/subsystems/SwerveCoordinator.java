@@ -54,6 +54,7 @@ public class SwerveCoordinator extends SubsystemBase {
     return Math.sqrt(yval*yval + xval*xval);
   }
 
+
   public void translateTurn(double direction, double translatePower, double twistPower){
     double twistAngle=twistPower*-45;
     direction = direction%360;

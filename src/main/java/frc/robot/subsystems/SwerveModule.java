@@ -18,29 +18,36 @@ public class SwerveModule extends SubsystemBase {
   CANSparkMax driveMotor;
   RelativeEncoder driveEncoder;
   double turnEncoderOffset;
+  PIDController pid;
   private double motorDirection = 1;
 
-  public SwerveModule(WPI_TalonSRX turnEncoder, CANSparkMax turnMotor, CANSparkMax driveMotor, RelativeEncoder driveEncoder, double turnEncoderOffset){
+  public SwerveModule(WPI_TalonSRX turnEncoder, CANSparkMax turnMotor, CANSparkMax driveMotor, RelativeEncoder driveEncoder, double turnEncoderOffset, double kP, double kI, double kD){
     this.driveMotor = driveMotor;
     this.turnMotor = turnMotor;
     this.turnEncoder = turnEncoder;
     this.driveEncoder = driveEncoder;
     this.turnEncoderOffset = turnEncoderOffset;
+    pid = new PIDController(kP, kI, kD);
+    pid.reset()
   }
   public void setSpeed(double speed){
     driveMotor.set(speed*motorDirection);
   }
+  
   public void setDirection(double direction){
     double currentAngle = currentAngle();
     double deltaAngle = -closestAngle(currentAngle, direction);
     double deltaAngleFlipped = -closestAngle(currentAngle, direction+180.0);
+
+    turnMotor.set(pid.calculate(currentAngle, direction));
+
     if (Math.abs(deltaAngle) <= Math.abs(deltaAngleFlipped)){
       motorDirection = 1;
-      turnMotor.set(clipSpeed((deadzone(deltaAngle, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));
+      //turnMotor.set(clipSpeed((deadzone(deltaAngle, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));
     }
     else {
       motorDirection = -1;
-      turnMotor.set(clipSpeed((deadzone(deltaAngleFlipped, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));
+      //turnMotor.set(clipSpeed((deadzone(deltaAngleFlipped, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));
     }
   }
   public static double closestAngle(double currentAngle, double targetAngle){

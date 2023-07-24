@@ -54,6 +54,25 @@ public final class Constants {
     public static final double TWIST_DEADZONE = 0.08;
     public static final double GAIN_BIAS=0.3; 
 
+    public static final double LEFT_FRONT_TURN_kP = 0;
+    public static final double LEFT_FRONT_TURN_kI = 0;
+    public static final double LEFT_FRONT_TURN_kD = 0;
+
+    public static final double LEFT_BACK_TURN_kP = 0;
+    public static final double LEFT_BACK_TURN_kI = 0;
+    public static final double LEFT_BACK_TURN_kD = 0;
+
+    public static final double RIGHT_FRONT_TURN_kP = 0;
+    public static final double RIGHT_FRONT_TURN_kI = 0;
+    public static final double RIGHT_FRONT_TURN_kD = 0;
+
+    public static final double RIGHT_BACK_TURN_kP = 0;
+    public static final double RIGHT_BACK_TURN_kI = 0;
+    public static final double RIGHT_BACK_TURN_kD = 0;
+
+
+
+
   }
   public static class DirectionDriveConstants{
     public static final double YAW_P=0.01;
