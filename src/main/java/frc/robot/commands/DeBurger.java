@@ -12,18 +12,18 @@ import frc.robot.subsystems.SwerveDrive;
 public class DeBurger extends CommandBase {
   SwerveDrive swerveDrive;
   Joystick joystick;
-  /** Creates a new DeBurger. */
+  /**
+   * Debug command, used to print values, may get absorbed into monitoring system once it is made
+   * @param swerveDrive
+   * @param joystick
+   */
   public DeBurger(SwerveDrive swerveDrive, Joystick joystick) {
     this.swerveDrive = swerveDrive;
     this.joystick = joystick;
     addRequirements(swerveDrive);
   }
-
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if(joystick.getRawButton(7)){
@@ -53,12 +53,8 @@ public class DeBurger extends CommandBase {
       System.out.println("12");
     }
   }
-
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

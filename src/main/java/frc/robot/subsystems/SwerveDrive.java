@@ -25,15 +25,15 @@ public class SwerveDrive extends SubsystemBase {
   SwerveModule RIGHT_FRONT_MODULE;
   SwerveModule RIGHT_BACK_MODULE;
   //Motors
-  private static CANSparkMax LEFT_FRONT_DRIVE_MOTOR;
-  private static CANSparkMax LEFT_BACK_DRIVE_MOTOR;
-  private static CANSparkMax RIGHT_FRONT_DRIVE_MOTOR;
-  private static CANSparkMax RIGHT_BACK_DRIVE_MOTOR;
+  public static CANSparkMax LEFT_FRONT_DRIVE_MOTOR;
+  public static CANSparkMax LEFT_BACK_DRIVE_MOTOR;
+  public static CANSparkMax RIGHT_FRONT_DRIVE_MOTOR;
+  public static CANSparkMax RIGHT_BACK_DRIVE_MOTOR;
 
-  private static CANSparkMax LEFT_FRONT_TURN_MOTOR;
-  private static CANSparkMax LEFT_BACK_TURN_MOTOR;
-  private static CANSparkMax RIGHT_FRONT_TURN_MOTOR;
-  private static CANSparkMax RIGHT_BACK_TURN_MOTOR;
+  public static CANSparkMax LEFT_FRONT_TURN_MOTOR;
+  public static CANSparkMax LEFT_BACK_TURN_MOTOR;
+  public static CANSparkMax RIGHT_FRONT_TURN_MOTOR;
+  public static CANSparkMax RIGHT_BACK_TURN_MOTOR;
   // Encoders
   public static RelativeEncoder LEFT_FRONT_DRIVE_DISTANCE_ENCODER;
   public static RelativeEncoder LEFT_BACK_DRIVE_DISTANCE_ENCODER;
@@ -47,7 +47,9 @@ public class SwerveDrive extends SubsystemBase {
 
   // Gyro
   public static Pigeon2 GYRO;
-  
+  /**
+   * Main swerve drive subsystem
+   */
   public SwerveDrive() {
     //Motors
     LEFT_FRONT_DRIVE_MOTOR = new CANSparkMax(Constants.DeviceIDs.LEFT_FRONT_DRIVE_ID, MotorType.kBrushless);
@@ -96,21 +98,30 @@ public class SwerveDrive extends SubsystemBase {
     // SwerveCoordinator
     SWERVE_COORDINATOR = new SwerveCoordinator(LEFT_FRONT_MODULE, LEFT_BACK_MODULE, RIGHT_FRONT_MODULE, RIGHT_BACK_MODULE);
   }
+  /**
+   * Resets all drive encoders
+   */
   public void resetDriveEncoders(){
     LEFT_FRONT_DRIVE_DISTANCE_ENCODER.setPosition(0);
     LEFT_BACK_DRIVE_DISTANCE_ENCODER.setPosition(0);
     RIGHT_FRONT_DRIVE_DISTANCE_ENCODER.setPosition(0);
     RIGHT_BACK_DRIVE_DISTANCE_ENCODER.setPosition(0);
   }
+  /**
+   * Checks if the robot has reached a certain distance in meters
+   * @param distanceMeters
+   * @return If the robot has reached the given distance
+   */
   public boolean reachedDistance(double distanceMeters){
     distanceMeters=Math.abs(distanceMeters);
-    double lfcur=Math.abs(LEFT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition());
-    double rfcur=Math.abs(RIGHT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition());
-    double lbcur=Math.abs(LEFT_BACK_DRIVE_DISTANCE_ENCODER.getPosition());
-    double rbcur=Math.abs(RIGHT_BACK_DRIVE_DISTANCE_ENCODER.getPosition());
-
-    System.out.println("lfval: "+lfcur);
-    return (lfcur>distanceMeters)&&(lbcur>distanceMeters)&&(rfcur>distanceMeters)&&(rbcur>distanceMeters);
+    double LeftFrontCurrentPosition=Math.abs(LEFT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition());
+    double RightFrontCurrentPosition=Math.abs(RIGHT_FRONT_DRIVE_DISTANCE_ENCODER.getPosition());
+    double LeftBackCurrentPosition=Math.abs(LEFT_BACK_DRIVE_DISTANCE_ENCODER.getPosition());
+    double RightBackCurrentPosition=Math.abs(RIGHT_BACK_DRIVE_DISTANCE_ENCODER.getPosition());
+    return (LeftFrontCurrentPosition>distanceMeters)
+         &&(LeftBackCurrentPosition>distanceMeters)
+         &&(RightFrontCurrentPosition>distanceMeters)
+         &&(RightBackCurrentPosition>distanceMeters);
   }
 
   @Override

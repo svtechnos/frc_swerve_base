@@ -19,7 +19,14 @@ public class SwerveModule extends SubsystemBase {
   RelativeEncoder driveEncoder;
   double turnEncoderOffset;
   private double motorDirection = 1;
-
+  /**
+   * Creates a new swerve module
+   * @param turnEncoder
+   * @param turnMotor
+   * @param driveMotor
+   * @param driveEncoder
+   * @param turnEncoderOffset
+   */
   public SwerveModule(WPI_TalonSRX turnEncoder, CANSparkMax turnMotor, CANSparkMax driveMotor, RelativeEncoder driveEncoder, double turnEncoderOffset){
     this.driveMotor = driveMotor;
     this.turnMotor = turnMotor;
@@ -27,9 +34,17 @@ public class SwerveModule extends SubsystemBase {
     this.driveEncoder = driveEncoder;
     this.turnEncoderOffset = turnEncoderOffset;
   }
+  /**
+   * Sets the speed of the motor
+   * @param speed
+   */
   public void setSpeed(double speed){
     driveMotor.set(speed*motorDirection);
   }
+  /**
+   * Sets the direction of the wheel
+   * @param direction
+   */
   public void setDirection(double direction){
     double currentAngle = currentAngle();
     double deltaAngle = -closestAngle(currentAngle, direction);
@@ -43,21 +58,42 @@ public class SwerveModule extends SubsystemBase {
       turnMotor.set(clipSpeed((deadzone(deltaAngleFlipped, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));
     }
   }
+  /**
+   * Gets smallest delta angle from the
+   * current angle to the target angle
+   * @param currentAngle
+   * @param targetAngle
+   * @return delta angle from -180 to 180 positive is counter-clockwise negative is clockwise
+   */
   public static double closestAngle(double currentAngle, double targetAngle){
-    // get direction
     double deltaAngle = (targetAngle - currentAngle)%360;
-    // convert from -360 to 360 to -180 to 180
     deltaAngle = (Math.abs(deltaAngle) > 180.0)?-(Math.signum(deltaAngle) * 360.0) + deltaAngle:deltaAngle;
     return deltaAngle;
   }
+  /**
+   * sets a number to 0 if its in the deadzone
+   * @param number
+   * @param deadzone
+   * @return number after deadzone check
+   */
   public static double deadzone(double number, double deadzone){
     number = (Math.abs(number)<deadzone)?number=0.0:number;
     return number;
   }
+  /**
+   * Clips the speed based on the clipSpeed
+   * @param speed
+   * @param clipSpeed
+   * @return The clipped speed
+   */
   public static double clipSpeed(double speed, double clipSpeed){
     speed = (Math.abs(speed)>clipSpeed)?clipSpeed:speed;
     return speed;
   }
+  /**
+   * Gets current angle
+   * @return Current angle in degrees
+   */
   public double currentAngle(){
     return (((turnEncoder.getSelectedSensorPosition())*(360.0/4096.0))-turnEncoderOffset)%360;
   }

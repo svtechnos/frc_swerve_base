@@ -5,17 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ChargeStation;
-import frc.robot.commands.DeBurger;
 import frc.robot.commands.DirectionDrive;
 import frc.robot.commands.TeleopMovement;
 import frc.robot.subsystems.SwerveDrive;
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.cameraserver.CameraServer;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,10 +20,9 @@ import edu.wpi.first.cameraserver.CameraServer;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+  // The robot's subsystems are defined here
   private final SwerveDrive swerveDrive = new SwerveDrive();
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+  // Joystick used for movement of the robot
   private final Joystick m_driverController = new Joystick(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -62,6 +57,11 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return new DirectionDrive(swerveDrive,1,Constants.Directions.FORWARD,0.2);
   }
+  /**
+   * Use this to pass the Teleop command to the main {@link Robot} class.
+   *
+   * @return the command to run in Teleop
+   */
   public Command getTeleopCommand() {
     return new TeleopMovement(swerveDrive, m_driverController);
   }

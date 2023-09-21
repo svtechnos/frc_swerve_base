@@ -8,15 +8,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class RightAutonomous extends SequentialCommandGroup {
   SwerveDrive swerveDrive;
-  /** Creates a new RightAutonomous. */
+  /**
+   * Right routine(Charged up) for autonomous mode
+   * @param swerveDrive
+   */
   public RightAutonomous() {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       //place cone
       new DirectionDrive(swerveDrive,4,Constants.Directions.FORWARD,0.3)

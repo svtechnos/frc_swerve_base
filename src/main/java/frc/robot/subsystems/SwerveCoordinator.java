@@ -12,19 +12,32 @@ public class SwerveCoordinator extends SubsystemBase {
   public SwerveModule leftBackModule;
   public SwerveModule rightFrontModule;
   public SwerveModule rightBackModule;
-  /** Creates a new SwerveCoordinator. */
+  /**
+   * Coordinator subsystem for the swerve modules
+   * @param leftFrontModule
+   * @param leftBackModule
+   * @param rightFrontModule
+   * @param rightBackModule
+   */
   public SwerveCoordinator(SwerveModule leftFrontModule, SwerveModule leftBackModule, SwerveModule rightFrontModule, SwerveModule rightBackModule) {
     this.leftFrontModule = leftFrontModule;
     this.leftBackModule = leftBackModule;
     this.rightFrontModule = rightFrontModule;
     this.rightBackModule = rightBackModule;
   }
+  /**
+   * Locks the wheels at 45 degrees
+   */
   public void lockPosition() {
     leftFrontModule.setDirection(135.0);
     leftBackModule.setDirection(45.0);
     rightFrontModule.setDirection(225.0);
     rightBackModule.setDirection(135.0);
   }
+  /**
+   * Turns in place with given power
+   * @param power
+   */
   public void inplaceTurn(double power){
     leftFrontModule.setDirection(315.0);
     leftBackModule.setDirection(45.0);
@@ -35,25 +48,51 @@ public class SwerveCoordinator extends SubsystemBase {
     rightFrontModule.setSpeed(power);
     rightBackModule.setSpeed(power);
   }
+  /**
+   * Main function used to move the robot
+   * @param direction
+   * @param translatePower
+   * @param twistPower
+   * @param modifier
+   */
   public void swerveMove(double direction, double translatePower, double twistPower,double modifier) {
     translatePower = SwerveModule.deadzone(translatePower, Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE);
     twistPower = SwerveModule.deadzone(twistPower, Constants.SwerveConstants.TWIST_DEADZONE);
     if ((translatePower == 0) && (twistPower != 0)){inplaceTurn(twistPower*modifier);}
     else {translateTurn(direction, translatePower, SwerveModule.deadzone(twistPower,0.2));}
   }
-  
+  /**
+   * Not tested
+   * @param direction
+   * @param translatePower
+   * @param twistPower
+   * @param twistVectorDirection
+   * @return
+   */
   public double angleCalculator(double direction, double translatePower, double twistPower, double twistVectorDirection){
     double yval= ((translatePower * Math.sin(direction*2.0*Math.PI/180.0)) + (twistPower*Math.cos(twistVectorDirection*Math.PI/180.0)));
     double xval= ((translatePower * Math.sin(direction*2.0*Math.PI/180.0)) + (twistPower*Math.cos(twistVectorDirection*Math.PI/180.0)));
     return Math.atan2(yval,xval);
   }
-
+  /**
+   * Not tested
+   * @param direction
+   * @param translatePower
+   * @param twistPower
+   * @param twistVectorDirection
+   * @return
+   */
   public double speedCalculator(double direction, double translatePower, double twistPower, double twistVectorDirection){
     double yval= ((translatePower * Math.sin(direction*2.0*Math.PI/180.0)) + (twistPower*Math.cos(twistVectorDirection*Math.PI/180.0)));
     double xval= ((translatePower * Math.sin(direction*2.0*Math.PI/180.0)) + (twistPower*Math.cos(twistVectorDirection*Math.PI/180.0)));
     return Math.sqrt(yval*yval + xval*xval);
   }
-
+  /**
+   * Twists and moves at the same time
+   * @param direction
+   * @param translatePower
+   * @param twistPower
+   */
   public void translateTurn(double direction, double translatePower, double twistPower){
     double twistAngle=twistPower*-45;
     direction = direction%360;

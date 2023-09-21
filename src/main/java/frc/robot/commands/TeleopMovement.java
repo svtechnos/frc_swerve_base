@@ -13,17 +13,18 @@ public class TeleopMovement extends CommandBase {
   Joystick joystick;
   SwerveDrive swerveDrive;
   double direction=0;
-  /** Creates a new TeleopMovement. */
+  /**
+   * Teleop mode command, lets the user have full control over the robots movement
+   * @param swerveDrive
+   * @param joystick
+   */
   public TeleopMovement(SwerveDrive swerveDrive, Joystick joystick) {
     this.joystick = joystick;
     this.swerveDrive = swerveDrive;
     addRequirements(swerveDrive);
   }
-
-  // Called when the command is initially scheduled.
   @Override
   public void initialize(){SwerveDrive.GYRO.setYaw(0);}
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute(){
     if(joystick.getMagnitude()>Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE){
@@ -37,13 +38,9 @@ public class TeleopMovement extends CommandBase {
     //swerveDrive.SWERVE_COORDINATOR.swerveMove(direction-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude()*poten, joystick.getZ()/2);
     //swerveDrive.SWERVE_COORDINATOR.swerveMove(direction, joystick.getMagnitude(), joystick.getZ());
   }
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {swerveDrive.SWERVE_COORDINATOR.swerveMove(direction,0,0,0);}
-
-  // Returns true when the command should end.
+  
   @Override
-  public boolean isFinished() {
-    return false;
-  }
+  public boolean isFinished() {return false;}
 }

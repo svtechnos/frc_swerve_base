@@ -28,37 +28,30 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private Command m_teleopCommand;
   private RobotContainer m_robotContainer;
-
-
-      //Arm fields and constants start
-      private static final int deviceID = 43;
-      private static final int deviceID2 = 42;
-      private static final int deviceID3 = 41;
-      private static final int deviceID4 = 40;
-      private CANSparkMax m_motor, m_motor2, m_motor3, m_motor4;
-      private SparkMaxPIDController m_pidController, m_pidController2, m_pidController3, m_pidController4;
-      private RelativeEncoder m_encoder, m_encoder2, m_encoder3, m_encoder4;
-      private Joystick m_joystick;
-      public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr, lastButtonPressed1, lastButtonPressed2, lastButtonPressed3, oldValue1 = -1000, oldValue2 = -1000, oldValue3 = -1000, run;
-      public boolean presetState;
-      public double setPoint1 = 0;
-      public double setPoint2 = 0;
-      public double setPoint3 = 0;
-      public double gain1 = 42;
-      public double gain2 = 22;
-      public double gain3 = 15;
-
-  
+    //Arm fields and constants start
+    private static final int deviceID = 43;
+    private static final int deviceID2 = 42;
+    private static final int deviceID3 = 41;
+    private static final int deviceID4 = 40;
+    private CANSparkMax m_motor, m_motor2, m_motor3, m_motor4;
+    private SparkMaxPIDController m_pidController, m_pidController2, m_pidController3, m_pidController4;
+    private RelativeEncoder m_encoder, m_encoder2, m_encoder3, m_encoder4;
+    private Joystick m_joystick;
+    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr, lastButtonPressed1, lastButtonPressed2, lastButtonPressed3, oldValue1 = -1000, oldValue2 = -1000, oldValue3 = -1000, run;
+    public boolean presetState;
+    public double setPoint1 = 0;
+    public double setPoint2 = 0;
+    public double setPoint3 = 0;
+    public double gain1 = 42;
+    public double gain2 = 22;
+    public double gain3 = 15;
     //Arm fields and constants end
-  
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
-    
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -67,7 +60,6 @@ public class Robot extends TimedRobot {
     m_motor2 = new CANSparkMax(deviceID2, MotorType.kBrushless);
     m_motor3 = new CANSparkMax(deviceID3, MotorType.kBrushless);
     m_motor4 = new CANSparkMax(deviceID4, MotorType.kBrushless);
-
     //CameraServer.startAutomaticCapture(1);
   }
 

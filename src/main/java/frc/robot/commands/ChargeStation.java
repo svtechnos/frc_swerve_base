@@ -14,7 +14,11 @@ public class ChargeStation extends CommandBase {
   boolean starting;
   double startingYaw;
   double direction;
-
+  /**
+   * Command the balances the robot on the charging station
+   * @param swervedrive
+   * @param direction Starting direction
+   */
   public ChargeStation(SwerveDrive swervedrive, double direction) {
     this.direction=direction;
     this.swervedrive = swervedrive;
@@ -31,16 +35,19 @@ public class ChargeStation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("level:"+levelRoll);
-    System.out.println("cur: "+SwerveDrive.GYRO.getRoll());
     double tiltError = SwerveDrive.GYRO.getRoll() - levelRoll;
     double dirError = SwerveDrive.GYRO.getYaw() - startingYaw;
     if(Math.abs(tiltError)>Constants.ChargeStationConstants.START_CLIMB_ANGLE) {starting=false;}
-    System.out.println("err: "+tiltError);
     if(starting){swervedrive.SWERVE_COORDINATOR.translateTurn(direction, Constants.ChargeStationConstants.START_SPEED, dirError*Constants.ChargeStationConstants.YAW_P);}
     else{
-      if(tiltError>Constants.ChargeStationConstants.DEADZONE){System.out.println("pos:for");swervedrive.SWERVE_COORDINATOR.translateTurn(Constants.Directions.BACKWARD, Math.abs(tiltError)*Constants.ChargeStationConstants.TILT_P, dirError*Constants.ChargeStationConstants.YAW_P);}
-      else if(tiltError<-Constants.ChargeStationConstants.DEADZONE){System.out.println("neg:back");swervedrive.SWERVE_COORDINATOR.translateTurn(Constants.Directions.FORWARD, Math.abs(tiltError)*Constants.ChargeStationConstants.TILT_P, dirError*Constants.ChargeStationConstants.YAW_P);}
+      if(tiltError>Constants.ChargeStationConstants.DEADZONE){
+        swervedrive.SWERVE_COORDINATOR.translateTurn(Constants.Directions.BACKWARD,
+        Math.abs(tiltError)*Constants.ChargeStationConstants.TILT_P, dirError*Constants.ChargeStationConstants.YAW_P);
+      }
+      else if(tiltError<-Constants.ChargeStationConstants.DEADZONE){
+        swervedrive.SWERVE_COORDINATOR.translateTurn(Constants.Directions.FORWARD,
+        Math.abs(tiltError)*Constants.ChargeStationConstants.TILT_P, dirError*Constants.ChargeStationConstants.YAW_P);
+      }
       else {swervedrive.SWERVE_COORDINATOR.lockPosition();}
     }
   }
