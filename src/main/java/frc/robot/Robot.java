@@ -155,7 +155,7 @@ public class Robot extends TimedRobot {
     m_encoder2 = m_motor2.getEncoder();
     m_encoder3 = m_motor3.getEncoder();
     m_encoder4 = m_motor4.getEncoder();
-    m_joystick = new Joystick(Constants.OperatorConstants.ARM_CONTROLLER_PORT);
+    m_joystick = new Joystick(Constants.OperatorConstants.kArmControllerPort);
     presetState = false;
     lastButtonPressed1 = 0; //0 is like the null value
     lastButtonPressed2 = 0;

@@ -4,13 +4,14 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrive;
 
 public class TeleopMovement extends CommandBase {
-  Joystick joystick;
+  XboxController joystick;
   SwerveDrive swerveDrive;
   double direction=0;
   /**
@@ -18,28 +19,21 @@ public class TeleopMovement extends CommandBase {
    * @param swerveDrive
    * @param joystick
    */
-  public TeleopMovement(SwerveDrive swerveDrive, Joystick joystick) {
+  public TeleopMovement(SwerveDrive swerveDrive, XboxController joystick) {
     this.joystick = joystick;
     this.swerveDrive = swerveDrive;
     addRequirements(swerveDrive);
   }
   @Override
-  public void initialize(){SwerveDrive.GYRO.setYaw(0);}
+  public void initialize(){swerveDrive.resetYaw();}
   @Override
   public void execute(){
-    if(joystick.getMagnitude()>Constants.SwerveConstants.MOVEMENT_SPEED_DEADZONE){
-      direction = (joystick.getDirectionDegrees()<0)?-joystick.getDirectionDegrees():-joystick.getDirectionDegrees()+360;
-    }
-    
-    double modifier=((-joystick.getThrottle()+1+Constants.SwerveConstants.GAIN_BIAS)/(2+Constants.SwerveConstants.GAIN_BIAS));
-    //modifier=0;
-    swerveDrive.SWERVE_COORDINATOR.swerveMove(direction-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude()*modifier, joystick.getZ(),modifier);
- 
-    //swerveDrive.SWERVE_COORDINATOR.swerveMove(direction-SwerveDrive.GYRO.getYaw(), joystick.getMagnitude()*poten, joystick.getZ()/2);
-    //swerveDrive.SWERVE_COORDINATOR.swerveMove(direction, joystick.getMagnitude(), joystick.getZ());
+    swerveDrive.setModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(joystick.getLeftX(),joystick.getLeftY(),joystick.getRightX()), new Rotation2d(swerveDrive.getYaw())));
   }
   @Override
-  public void end(boolean interrupted) {swerveDrive.SWERVE_COORDINATOR.swerveMove(direction,0,0,0);}
+  public void end(boolean interrupted) {
+    swerveDrive.setModuleStates(new ChassisSpeeds(0,0,0));
+  }
   
   @Override
   public boolean isFinished() {return false;}

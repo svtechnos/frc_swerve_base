@@ -7,18 +7,24 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SwerveModule extends SubsystemBase {
 
-  WPI_TalonSRX turnEncoder;
-  CANSparkMax turnMotor;
-  CANSparkMax driveMotor;
-  RelativeEncoder driveEncoder;
-  double turnEncoderOffset;
-  private double motorDirection = 1;
+  private final WPI_TalonSRX turnEncoder;
+  private final CANSparkMax turnMotor;
+  private final CANSparkMax driveMotor;
+  private final RelativeEncoder driveEncoder;
+  private final double turnEncoderOffset;
+  private final PIDController turnPidController;
   /**
    * Creates a new swerve module
    * @param turnEncoder
@@ -27,74 +33,52 @@ public class SwerveModule extends SubsystemBase {
    * @param driveEncoder
    * @param turnEncoderOffset
    */
-  public SwerveModule(WPI_TalonSRX turnEncoder, CANSparkMax turnMotor, CANSparkMax driveMotor, RelativeEncoder driveEncoder, double turnEncoderOffset){
-    this.driveMotor = driveMotor;
-    this.turnMotor = turnMotor;
-    this.turnEncoder = turnEncoder;
-    this.driveEncoder = driveEncoder;
+  public SwerveModule(int turnEncoder_ID, int turnMotor_ID, int driveMotor_ID, double turnEncoderOffset){
+    this.driveMotor = new CANSparkMax(driveMotor_ID, MotorType.kBrushless);
+    this.turnMotor = new CANSparkMax(turnMotor_ID, MotorType.kBrushless);
+    this.turnEncoder = new WPI_TalonSRX(turnEncoder_ID);
+    this.driveEncoder = driveMotor.getEncoder();
+    this.turnPidController = new PIDController(Constants.SwerveConstants.MODULE_ROTATION_P, 0, 0);
     this.turnEncoderOffset = turnEncoderOffset;
+    driveMotor.setIdleMode(IdleMode.kBrake);
+    turnMotor.setIdleMode(IdleMode.kBrake);
+    driveMotor.setSmartCurrentLimit(40);
+    turnMotor.setSmartCurrentLimit(30);
+    turnPidController.enableContinuousInput(0, 360);
+    turnPidController.setTolerance(1);
   }
-  /**
-   * Sets the speed of the motor
-   * @param speed
-   */
-  public void setSpeed(double speed){
-    driveMotor.set(speed*motorDirection);
+  public double getDrivePosition() {
+    return driveEncoder.getPosition();
   }
-  /**
-   * Sets the direction of the wheel
-   * @param direction
-   */
-  public void setDirection(double direction){
-    double currentAngle = currentAngle();
-    double deltaAngle = -closestAngle(currentAngle, direction);
-    double deltaAngleFlipped = -closestAngle(currentAngle, direction+180.0);
-    if (Math.abs(deltaAngle) <= Math.abs(deltaAngleFlipped)){
-      motorDirection = 1;
-      turnMotor.set(clipSpeed((deadzone(deltaAngle, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));
-    }
-    else {
-      motorDirection = -1;
-      turnMotor.set(clipSpeed((deadzone(deltaAngleFlipped, Constants.SwerveConstants.TURN_ANGLE_DEADZONE)*Constants.SwerveConstants.MODULE_ROTATION_P),Constants.SwerveConstants.CLIP_SPEED));
-    }
+  public void resetDriveEncoder() {
+    driveEncoder.setPosition(0);
   }
-  /**
-   * Gets smallest delta angle from the
-   * current angle to the target angle
-   * @param currentAngle
-   * @param targetAngle
-   * @return delta angle from -180 to 180 positive is counter-clockwise negative is clockwise
-   */
-  public static double closestAngle(double currentAngle, double targetAngle){
-    double deltaAngle = (targetAngle - currentAngle)%360;
-    deltaAngle = (Math.abs(deltaAngle) > 180.0)?-(Math.signum(deltaAngle) * 360.0) + deltaAngle:deltaAngle;
-    return deltaAngle;
-  }
-  /**
-   * sets a number to 0 if its in the deadzone
-   * @param number
-   * @param deadzone
-   * @return number after deadzone check
-   */
-  public static double deadzone(double number, double deadzone){
-    number = (Math.abs(number)<deadzone)?number=0.0:number;
-    return number;
-  }
-  /**
-   * Clips the speed based on the clipSpeed
-   * @param speed
-   * @param clipSpeed
-   * @return The clipped speed
-   */
-  public static double clipSpeed(double speed, double clipSpeed){
-    speed = (Math.abs(speed)>clipSpeed)?clipSpeed:speed;
-    return speed;
-  }
-  /**
-   * Gets current angle
-   * @return Current angle in degrees
-   */
-  public double currentAngle(){
+  public double getCurrentAngle(){
     return (((turnEncoder.getSelectedSensorPosition())*(360.0/4096.0))-turnEncoderOffset)%360;
+  }
+  public SwerveModulePosition getPosition() {
+    return new SwerveModulePosition(getDrivePosition(), new Rotation2d(getCurrentAngle()));
+  }
+  public SwerveModuleState getSwerveModuleState() {
+    return new SwerveModuleState(driveEncoder.getVelocity(), new Rotation2d(getCurrentAngle()));
+  }
+  public void stop() {
+    driveMotor.set(0);
+    turnMotor.set(0);
+  }
+  public void setSwerveModuleState(SwerveModuleState state) {
+    if(Math.abs(state.speedMetersPerSecond) < 0.001){
+      stop();
+      return;
+    }
+    state = SwerveModuleState.optimize(state, getSwerveModuleState().angle);
+    driveMotor.set(state.speedMetersPerSecond);
+    turnMotor.set(turnPidController.calculate(getCurrentAngle(), state.angle.getDegrees()));
+  }
+  public double[] getMotorsCurrent(){
+    return new double[]{driveMotor.getOutputCurrent(),turnMotor.getOutputCurrent()};
+  }
+  public double[] getMotorsTemp(){
+    return new double[]{driveMotor.getMotorTemperature(),turnMotor.getMotorTemperature()};
   }
 }

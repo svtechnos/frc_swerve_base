@@ -4,7 +4,20 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+
 public final class Constants {
+  public static class Kinematics {
+    public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
+    public static final double kSideLength = 20; //TODO: fix this
+    public static final SwerveDriveKinematics kSwerveDriveKinematics = new SwerveDriveKinematics(
+      new Translation2d(kSideLength/2, kSideLength/2),
+      new Translation2d(-kSideLength/2, kSideLength/2),
+      new Translation2d(kSideLength/2, -kSideLength/2),
+      new Translation2d(-kSideLength/2, -kSideLength/2)
+    );
+  }
   public static class Offsets {
     public static final double LEFT_FRONT_TURN_ENCODER_OFFSET = 29.2929;
     public static final double LEFT_BACK_TURN_ENCODER_OFFSET = 316.3847;
@@ -13,23 +26,23 @@ public final class Constants {
   
   }
   public static class DeviceIDs {
-    public static final int LEFT_FRONT_DRIVE_ID=5;
-    public static final int LEFT_FRONT_TURN_ID=7;
-    public static final int LEFT_FRONT_TURN_ENCODER_ID=24;
-    public static final int RIGHT_FRONT_DRIVE_ID=3;
-    public static final int RIGHT_FRONT_TURN_ID=8;
-    public static final int RIGHT_FRONT_TURN_ENCODER_ID=21;
-    public static final int LEFT_BACK_DRIVE_ID=1;
-    public static final int LEFT_BACK_TURN_ID=4;
-    public static final int LEFT_BACK_TURN_ENCODER_ID=23;
-    public static final int RIGHT_BACK_DRIVE_ID=6;
-    public static final int RIGHT_BACK_TURN_ID=2;
-    public static final int RIGHT_BACK_TURN_ENCODER_ID=22;
-    public static final int GYRO_DEVICE_ID=11;
+    public static final int LEFT_FRONT_DRIVE=5;
+    public static final int LEFT_FRONT_TURN=7;
+    public static final int LEFT_FRONT_TURN_ENCODER=24;
+    public static final int RIGHT_FRONT_DRIVE=3;
+    public static final int RIGHT_FRONT_TURN=8;
+    public static final int RIGHT_FRONT_TURN_ENCODER=21;
+    public static final int LEFT_BACK_DRIVE=1;
+    public static final int LEFT_BACK_TURN=4;
+    public static final int LEFT_BACK_TURN_ENCODER=23;
+    public static final int RIGHT_BACK_DRIVE=6;
+    public static final int RIGHT_BACK_TURN=2;
+    public static final int RIGHT_BACK_TURN_ENCODER=22;
+    public static final int GYRO=11;
   }
   public static class OperatorConstants {
-    public static final int DRIVER_CONTROLLER_PORT = 1;
-    public static final int ARM_CONTROLLER_PORT = 0;
+    public static final int kDriverControllerPort = 1;
+    public static final int kArmControllerPort = 0;
   }
   public static class Directions {
     public static final double FORWARD = 0;

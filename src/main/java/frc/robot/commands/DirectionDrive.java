@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 import frc.robot.Constants;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -29,16 +30,20 @@ public class DirectionDrive extends CommandBase {
   }
   @Override
   public void initialize() {    
-    startingYaw = SwerveDrive.GYRO.getYaw();
+    startingYaw = swerveDrive.getYaw();
     swerveDrive.resetDriveEncoders();
   }
   @Override
   public void execute() {
-    double dirError = SwerveDrive.GYRO.getYaw() - startingYaw;
-    swerveDrive.SWERVE_COORDINATOR.translateTurn(direction,speed, dirError*Constants.DirectionDriveConstants.YAW_P);
+    double dirError = swerveDrive.getYaw() - startingYaw;
+    double Vx = speed*Math.cos(direction);
+    double Vy = speed*Math.sin(direction);
+    swerveDrive.setModuleStates(new ChassisSpeeds(Vx,Vy,dirError*Constants.DirectionDriveConstants.YAW_P));
   }
   @Override
-  public void end(boolean interrupted) {swerveDrive.SWERVE_COORDINATOR.translateTurn(direction,0,0);}
+  public void end(boolean interrupted) {
+    swerveDrive.setModuleStates(new ChassisSpeeds(0,0,0));
+  }
   @Override
   public boolean isFinished() {return swerveDrive.reachedDistance(distanceMeters);}
 }
